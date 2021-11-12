@@ -1,7 +1,7 @@
 # li
 A simple text editor in x86_64
 
-#Features
+## Features
 
 |Name of the features| Status |
 |---|---|
@@ -12,7 +12,7 @@ A simple text editor in x86_64
 |Colorize the code|X|
 |Enable raw mod|X|
 
-#Issues
+## Issues
 
 |Description of the issue | Status |
 |-------|---|
