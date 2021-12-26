@@ -1,4 +1,4 @@
-all: li clear
+all: tmp li clear
 
 li: li.o
 	ld -o li li.o	
