@@ -2,23 +2,34 @@
 #include <termios.h>
 #include <unistd.h>
 
-struct termios *orig_termios;
 void disableRawMod() 
 {
-  tcsetattr(STDIN_FILENO, TCSAFLUSH, orig_termios);
-  free(orig_termios);
+    struct termios orig_termios;
+    orig_termios.c_iflag= 17664;
+    orig_termios.c_oflag= 5;
+    orig_termios.c_lflag= 35387;
+    orig_termios.c_cflag= 191;
+    orig_termios.c_cc[0]=3;
+    orig_termios.c_cc[1]=28;
+    orig_termios.c_cc[2]=127;
+    orig_termios.c_cc[3]=21;
+    orig_termios.c_cc[4]=4;
+    tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios);
 }
 
 void enableRawMod()
 {
     struct termios termios_p;
-    orig_termios=calloc(1, sizeof(struct termios));  
-    tcgetattr(0, orig_termios);
-    termios_p=*orig_termios;
-    termios_p.c_iflag &= ~(IGNBRK | BRKINT | PARMRK | ISTRIP| INLCR | IGNCR | ICRNL | IXON);
-    termios_p.c_oflag &= ~OPOST;
-    termios_p.c_lflag &= ~(ECHO | ECHONL | ICANON | ISIG | IEXTEN);
-    termios_p.c_cflag &= ~(CSIZE | PARENB);
+    termios_p.c_iflag= 17664;
+    termios_p.c_oflag= 5;
+    termios_p.c_lflag= 35387;
+    termios_p.c_cflag= 191;
+    //termios_p.c_iflag &= ~(BRKINT | INPCK | IXON);
+    //termios_p.c_lflag &= ~(ECHO | ICANON | ISIG | IEXTEN | VERASE );
+    termios_p.c_lflag &= ~(ECHO | ICANON | ISIG );
     termios_p.c_cflag |= CS8;
+    termios_p.c_cc[VMIN]=1;
+    termios_p.c_cc[VTIME] = 0;
     tcsetattr(STDIN_FILENO, TCSAFLUSH, &termios_p);
 }
+

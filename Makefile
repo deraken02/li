@@ -1,9 +1,10 @@
-all: tmp li clear
+all: li clear
 
-li: li.o
-	ld -o li li.o	
-li.o:
-	as -a --gstabs -o li.o main.s
+li: main.s rawMod.o
+	gcc -g -static $^ -o $@
+
+rawMod.o: rawMod.c
+	gcc -c -Wall -Wextra -pedantic $<
 
 clear:
 	rm -fr *.o

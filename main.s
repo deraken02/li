@@ -6,19 +6,24 @@ fd:
 strNotFile:
     .string "No file specified\n"
 .text
-.globl _start
-_start:
+.globl main
+main:
     pop %rax                /*argc */
     movq $2, %rbx           /*Le nombre de paramètre que l'on veut*/
-    cmp %rax, %rbx          /*Comparaison avec argc*/
+    and %rax, %rbx          /*Comparaison avec argc*/
     jne notFile             /*Imprime une erreur et sort du programme*/
     pop %rax                /*Sinon recupère argv[0]*/
     pop %rax                /*On récupère le pathname*/
     call openFile           /*Ouvre un file descriptor*/
-main:
+    call enableRawMod
+while:
     call getchar
     call putchar
-    jmp main
+    movq $c,%rax
+    movq $27, %rbx
+    cmp %rax, %rbx
+    je exit
+    jmp while
 
 notFile:
     movq $1, %rax           /*syscall write*/
@@ -28,6 +33,7 @@ notFile:
     syscall                 /*Appel le noyau*/
     jmp exit
 exit:
+    call disableRawMod
     mov $60 ,%rax
     xor %rdi,%rdi   /*exit(0)*/
     syscall
@@ -80,7 +86,11 @@ putchar:
     movq $c, %rsi /*addresse du buffer*/
     movq $1, %rdx /*nombre d'octet à écrire*/
     syscall       /*Appel le noyau*/
-
+    movq $1, %rax /*syscall write*/
+    movq fd, %rdi /*File Descriptor*/
+    movq $c, %rsi /*addresse du buffer*/
+    movq $1, %rdx /*nombre d'octet à écrire*/
+    syscall       /*Appel le noyau*/
     movq %rbp, %rsp
     pop %rbp
     ret
