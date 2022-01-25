@@ -8,12 +8,12 @@ strNotFile:
 eraseTerm:
     .string "\033[H\033[J" 
 .text
+
 .globl main
 main:
-    pop %rax                /*argc */
     movq $2, %rbx           /*Le nombre de paramètre que l'on veut*/
-    and %rax, %rbx          /*Comparaison avec argc*/
-    jne notFile             /*Imprime une erreur et sort du programme*/
+    cmp %rdi, %rbx          /*Comparaison avec argc*/
+    jne notFile              /*Imprime une erreur et sort du programme*/
     pop %rax                /*Sinon recupère argv[0]*/
     pop %rax                /*On récupère le pathname*/
     call openFile           /*Ouvre un file descriptor*/
