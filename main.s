@@ -5,6 +5,8 @@ fd:
     .int 1
 strNotFile:
     .string "No file specified\n"
+eraseTerm:
+    .string "\033[H\033[J" 
 .text
 .globl main
 main:
@@ -15,6 +17,7 @@ main:
     pop %rax                /*Sinon recupère argv[0]*/
     pop %rax                /*On récupère le pathname*/
     call openFile           /*Ouvre un file descriptor*/
+    call clearTerm
     call enableRawMod
 while:
     call getchar
@@ -91,6 +94,22 @@ putchar:
     movq $c, %rsi /*addresse du buffer*/
     movq $1, %rdx /*nombre d'octet à écrire*/
     syscall       /*Appel le noyau*/
+    movq %rbp, %rsp
+    pop %rbp
+    ret
+
+.global clearTerm
+.type clearTerm, @function
+clearTerm:
+    push %rbp   /*Sauvegarde le pointeur de base*/
+    movq %rsp, %rbp
+
+    movq $1, %rax /*syscall write*/
+    movq $1, %rdi /*File Descriptor*/
+    movq $eraseTerm, %rsi /*addresse du buffer*/
+    movq $6, %rdx /*nombre d'octet à écrire*/
+    syscall       /*Appel le noyau*/
+    
     movq %rbp, %rsp
     pop %rbp
     ret
