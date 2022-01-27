@@ -5,19 +5,27 @@ A simple text editor in x86_64
 
 |Name of the features| Status |
 |---|---|
-|Open the file in argument|Y|
-|Write in the file in argument|Y|
-|Append the text in the file|X|
-|Display the content of the file|X|
-|Remove text in the file|X|
-|Colorize the code|X|
-|Enable raw mod|Y|
-|Erase the terminal in the launchement|Y|
-|Manage the direction keys|X|
-|Manage the backspace|X|
+|Open the file in argument|✔|
+|Write in the file in argument|✔|
+|Append the text in an existing file|❌|
+|Display the content of the file if he already exists|❌|
+|Remove text in the file|❌|
+|Colorize the code|❌|
+|Enable raw mod|✔|
+|Erase the terminal in the launchement|✔|
+|Manage the direction keys|❌|
+|Manage the backspace|❌|
 
 ## Issues
 
 |Description of the issue | Status |
 |-------|---|
 |||
+
+## CI coverage
+
+|Coverage| Status |
+|---|---|
+|Build the text editor|✔|
+|Write a text in a new file|✔|
+|Append text in an existing file|❌|
