@@ -16,6 +16,7 @@ main:
     jne notFile             /*Imprime une erreur et sort du programme*/
     mov 8(%rsi), %rax       /*Sinon recupère argv[1]*/
     call openFile           /*Ouvre un file descriptor*/
+    movq %rax, fd
     call clearTerm
     call enableRawMod
 while:
@@ -40,27 +41,6 @@ exit:
     mov $60 ,%rax
     xor %rdi,%rdi   /*exit(0)*/
     syscall
-
-.global openFile
-.type openFile, @function
-/**
- * Ouvre le fichier passer en paramètre et place le file descriptor dans la variable globale fd
- * @param pathname
- * @return void
- */
-openFile:
-    push %rbp               /*Sauvegarde le pointeur de base*/
-    movq %rsp, %rbp
-
-    movq %rax, %rdi         /*Place le pathname dans rdi*/
-    movq $2, %rax           /*Instruction open*/
-    movq $00001101,%rsi     /*O_CREATE | O_TRUNC | O_WRONLY*/
-    syscall
-    movq %rax, fd
-
-    movq %rbp, %rsp
-    pop %rbp
-    ret
 
 .global getchar
 .type getchar, @function
