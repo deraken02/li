@@ -20,11 +20,12 @@ main:
     call enableRawMod
 while:
     call getchar
-    call putchar
-    movq $c,%rax
+    mov c,%rax
+    and $255, %rax
     movq $27, %rbx
     cmp %rax, %rbx
     je exit
+    call putchar
     jmp while
 
 notFile:
