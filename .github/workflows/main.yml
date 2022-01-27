@@ -43,7 +43,7 @@ jobs:
       - name: Verify the result
         run: |
           read l < tester
-          if [[ l == "Hello world"* ]]
+          if [[ $l == "Hello world"* ]]
           then
             return 0
           else
