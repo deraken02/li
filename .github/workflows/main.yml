@@ -31,9 +31,8 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: Create script of test
         run: |
-          echo "#include <stdio.h>"> test.c
-          echo 'int main(){printf("%s%c","Hello world",27);return 0;}' >> test.c
-          gcc test.c
+          cp tests/write_test.c .
+          gcc write_test.c
           
       # Runs a single command using the runners shell
       - name: Try to write in the file
@@ -42,10 +41,7 @@ jobs:
       # Verify the result
       - name: Verify the result
         run: |
-          read l < tester
-          if [[ $l == "Hello world"* ]]
-          then
-            return 0
-          else
-            return 1
-          fi
+          cp tests/write_test.sh .
+          ./write_test.sh
+      - name: Cleanup
+        run: rm -f write_test.c write_test.sh tester a.out
