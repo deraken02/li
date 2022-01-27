@@ -42,6 +42,7 @@ jobs:
       - name: Verify the result
         run: |
           cp tests/write_test.sh .
+          chmod +x write_test.sh
           ./write_test.sh
       - name: Cleanup
         run: rm -f write_test.c write_test.sh tester a.out
