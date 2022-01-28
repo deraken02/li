@@ -31,7 +31,7 @@ while:
 
 notFile:
     movq $1, %rax           /*syscall write*/
-    movq $1, %rdi           /*STDOUT*/
+    movq $2, %rdi           /*STDERR*/
     movq $strNotFile, %rsi  /*addresse du buffer*/
     movq $18, %rdx          /*nombre d'octet à écrire*/
     syscall                 /*Appel le noyau*/
