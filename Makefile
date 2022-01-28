@@ -7,6 +7,7 @@ rawMod.o: rawMod.c
 	gcc -c -Wall -Wextra -pedantic $<
 
 open.o: open.s
-	as -a --gstabs -o $@ $^
+	as -a --gstabs -o $@ $^ 1>/dev/null
+
 clear:
 	rm -fr *.o
