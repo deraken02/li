@@ -27,22 +27,27 @@ jobs:
 
       - name: Build li
         run: make
-  
-      # Runs a set of commands using the runners shell
-      - name: Create script of test
+
+      - name: Error verification 
+        run: |
+          cp tests/error_test.sh .
+          ./li 1>stdout 2>error
+          chmod +x error_test.sh
+          ./error_test.sh
+
+      - name: Compile script of test
         run: |
           cp tests/write_test.c .
           gcc write_test.c
           
-      # Runs a single command using the runners shell
       - name: Try to write in the file
         run: ./a.out | ./li tester
         
-      # Verify the result
       - name: Verify the result
         run: |
           cp tests/write_test.sh .
           chmod +x write_test.sh
           ./write_test.sh
+      
       - name: Cleanup
-        run: rm -f write_test.c write_test.sh tester a.out
+        run: rm -f write_test.c write_test.sh tester a.out stdout error
