@@ -35,8 +35,10 @@ notFile:
     movq $strNotFile, %rsi  /*addresse du buffer*/
     movq $18, %rdx          /*nombre d'octet à écrire*/
     syscall                 /*Appel le noyau*/
-    jmp exit
+    jmp end
 exit:
+    call clearTerm
+end:
     call disableRawMod
     mov $60 ,%rax
     xor %rdi,%rdi   /*exit(0)*/
