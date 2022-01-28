@@ -1,5 +1,7 @@
 #!/bin/bash
+chmod +w tester
 read l < tester
+
 if [[ $l == "Hello world"* ]]
 then
     exit 0
