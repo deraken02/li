@@ -1,5 +1,5 @@
 #!/bin/bash
-chmod +w tester
+chmod +r tester
 read l < tester
 
 if [[ $l == "Hello world"* ]]
