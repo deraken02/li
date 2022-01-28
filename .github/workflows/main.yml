@@ -26,7 +26,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Build li
-        run: make
+        run: make -C src
 
       - name: Error verification 
         run: |
