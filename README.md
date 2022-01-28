@@ -15,7 +15,8 @@ A simple text editor in x86_64
 |Erase the terminal in the launchement|✔|
 |Manage the direction keys|❌|
 |Manage the backspace|❌|
-|Write the error message on the standard error output|❌|
+|Write the error message on the error output|✔|
+
 ## Issues
 
 |Description of the issue | Status |
@@ -28,5 +29,5 @@ A simple text editor in x86_64
 |---|---|
 |Build the text editor|✔|
 |Write a text in a new file|✔|
-|Write an error message if there are no arguments|❌|
+|Write an error message if there are no arguments|✔|
 |Append text in an existing file|❌|
