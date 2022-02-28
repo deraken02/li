@@ -66,6 +66,24 @@ createFile:
     movq $0, %rax           /* syscall write*/
     movq $1, %rdi           /* STDOUT*/
     syscall
+
+    movq %rbp, %rsp
+    pop %rbp
+    ret
+
+.global closeFile
+.type closeFile, @function
+/**
+ * Close the file
+ * @param file descriptor
+ */
+closeFile:
+    push %rbp
+    movq %rsp, %rbp
+
+    movq $3, %rax
+    syscall
+
     movq %rbp, %rsp
     pop %rbp
     ret

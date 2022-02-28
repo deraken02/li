@@ -54,6 +54,8 @@ notFile:
     syscall                 /*Appel le noyau*/
     jmp end
 exit:
+    movq fd, %rdi
+    call closeFile
     call clearTerm
 end:
     call disableRawMod
