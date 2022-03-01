@@ -57,14 +57,14 @@ createFile:
     push %rbp
     movq %rsp, %rbp
 
-    movq %rdi, %rsi         /* Place le pointeur de stat dans rsi*/
-    movq %rax, %rdi         /* Place fd dans rdi*/
     movq $5, %rax           /* Instruction fstat*/
     syscall
-    movq 48(%rsi), %rdx           /* Move the size in rdx*/
-    movq %rdi, %rsi         /* Move the file descriptor in rsi*/
-    movq $0, %rax           /* syscall write*/
-    movq $1, %rdi           /* STDOUT*/
+.read:
+    movq $0, %rax
+    syscall
+    movq %rax, %rdx
+    movq $1, %rdi
+    movq $1, %rax
     syscall
 
     movq %rbp, %rsp

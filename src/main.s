@@ -29,8 +29,9 @@ main:
     call openFile           /*Ouvre un file descriptor*/
     movq %rax, fd
     call clearTerm
-    movq fd, %rax
-    movq $stat, %rdi
+    movq fd, %rdi
+    movq $stat, %rsi
+    movq $c, %rdx
     call displayContent
     call enableRawMod
 while:
