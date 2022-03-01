@@ -30,4 +30,4 @@ A simple text editor in x86_64
 |Build the text editor|✔|
 |Write a text in a new file|✔|
 |Write an error message if there are no arguments|✔|
-|Append text in an existing file|❌|
+|Append text in an existing file|✔|
