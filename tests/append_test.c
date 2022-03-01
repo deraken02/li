@@ -2,6 +2,6 @@
 
 int main()
 {
-    printf("%s%c","\nGoodbye world",27);
+    printf("%s%c","Goodbye world",27);
     return 0;
 }

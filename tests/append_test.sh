@@ -2,7 +2,7 @@
 chmod +r tester
 read l < tester
 
-if [[ $l == "Hello world\nGoodbye world"* ]]
+if [[ $l == "Hello worldGoodbye world"* ]]
 then
     exit 0
 else
