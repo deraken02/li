@@ -59,14 +59,16 @@ createFile:
 
     movq $5, %rax           /* Instruction fstat*/
     syscall
-.read:
-    movq $0, %rax
+    movq $0, %rax           /* Read the content */
     syscall
-    movq %rax, %rdx
-    movq $1, %rdi
+    cmp $0, %rax
+    jle .endDisplayContent
+    movq %rax, %rdx         /* Display the content*/
+    movq $1, %rdi           /* on the standard output*/
     movq $1, %rax
     syscall
 
+.endDisplayContent:
     movq %rbp, %rsp
     pop %rbp
     ret
