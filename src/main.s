@@ -75,7 +75,7 @@ getchar:
     movq $c, %rsi /*addresse du buffer*/
     movq $1, %rdx /*nombre d'octet à lire*/
     syscall       /*Appel le noyau*/
-    
+
     movq %rbp, %rsp
     pop %rbp
     ret
@@ -111,7 +111,7 @@ clearTerm:
     movq $eraseTerm, %rsi /*addresse du buffer*/
     movq $6, %rdx /*nombre d'octet à écrire*/
     syscall       /*Appel le noyau*/
-    
+
     movq %rbp, %rsp
     pop %rbp
     ret

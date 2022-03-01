@@ -11,7 +11,7 @@ openFile:
 
     movq %rax, %rdi         /*Place le pathname dans rdi*/
     movq $2, %rax           /*Instruction open*/
-    movq $0,%rsi            /*O_RDONLY*/
+    movq $2,%rsi            /*O_RDONLY*/
     syscall
     cmp $0, %rax
     jg endOpenFile
