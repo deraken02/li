@@ -8,7 +8,7 @@ A simple text editor in x86_64
 |Open the file in argument|✔|
 |Write in the file in argument|✔|
 |Append the text in an existing file|❌|
-|Display the content of the file if he already exists|❌|
+|Display the content of the file if he already exists|✔|
 |Remove text in the file|❌|
 |Colorize the code|❌|
 |Enable raw mod|✔|
