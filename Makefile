@@ -1,4 +1,4 @@
-TARGET = ../li
+TARGET = li
 
 CC = gcc
 ASM = as
@@ -9,13 +9,13 @@ ASM_FLAGS = -a --gstabs
 
 all: $(TARGET) clear
 
-$(TARGET): main.s rawMod.o open.o
+$(TARGET): src/main.s rawMod.o open.o
 	$(CC) $(CCASM_FLAGS) $^ -o $@
 
-rawMod.o: rawMod.c
+rawMod.o: src/rawMod.c
 	gcc -c $(CC_FLAGS) $<
 
-open.o: open.s
+open.o: src/open.s
 	as $(ASM_FLAGS) -o $@ $^ 1>/dev/null
 
 clear:
