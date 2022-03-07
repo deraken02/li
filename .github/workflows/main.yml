@@ -26,9 +26,9 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Build li
-        run: make -C src
+        run: make
 
-      - name: Error verification 
+      - name: Error verification
         run: |
           cp tests/error_test.sh .
           ./li 1>stdout 2>error
