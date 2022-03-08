@@ -7,6 +7,14 @@ strNotFile:
     .string "No file specified\n"
 eraseTerm:
     .string "\033[H\033[J"
+CursorUp:
+    .string "\033[A"
+CursorDown:
+    .string "\033[B"
+CursorRight:
+    .string "\033[C"
+CursorLeft:
+    .string "\033[D"
 stat:
     .long 0         /*st_dev         0*/
     .long 0         /*st_ino         8*/
@@ -108,7 +116,7 @@ char_handler:
     and $255, %rax
     movq $27, %rbx
     cmp %rax, %rbx
-    je exit
+    je escMode
     movq $3, %rbx
     cmp %rax, %rbx
     je exit
@@ -128,6 +136,23 @@ clearTerm:
     movq $eraseTerm, %rsi /*addresse du buffer*/
     movq $6, %rdx /*nombre d'octet à écrire*/
     syscall       /*Appel le noyau*/
+
+    movq %rbp, %rsp
+    pop %rbp
+    ret
+
+.global escMode
+.type escMode, @function
+escMode:
+    push %rbp   /*Sauvegarde le pointeur de base*/
+    movq %rsp, %rbp
+
+    call getchar
+    mov c, %rax
+    and $255, %rax
+    movq $113, %rbx
+    cmp %rax, %rbx
+    je exit
 
     movq %rbp, %rsp
     pop %rbp
