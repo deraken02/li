@@ -37,7 +37,7 @@ createFile:
 
     movq %rax, %rdi         /*Place le pathname dans rdi*/
     movq $2, %rax           /*Instruction open*/
-    movq $00001101,%rsi     /*O_CREATE | O_TRUNC | O_WRONLY*/
+    movq $578,%rsi          /*O_CREATE | O_TRUNC | O_RDWR*/
     movq $420, %rdx         /*Mode 644*/
     syscall
 

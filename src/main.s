@@ -6,7 +6,7 @@ fd:
 strNotFile:
     .string "No file specified\n"
 eraseTerm:
-    .string "\033[H\033[J" 
+    .string "\033[H\033[J"
 stat:
     .long 0         /*st_dev         0*/
     .long 0         /*st_ino         8*/
@@ -36,14 +36,8 @@ main:
     call enableRawMod
 while:
     call getchar
-    mov c,%rax
-    and $255, %rax
-    movq $27, %rbx
-    cmp %rax, %rbx
-    je exit
-    movq $3, %rbx
-    cmp %rax, %rbx
-    je exit
+    mov c,%rdi
+    call char_handler
     call putchar
     jmp while
 
@@ -100,6 +94,29 @@ putchar:
     pop %rbp
     ret
 
+.global char_handler
+.type char_handler, @function
+/**
+ * Handler for the special charactere
+ * @param char the current charactere
+ */
+char_handler:
+    push %rbp
+    movq %rsp, %rbp
+
+    mov %rdi, %rax
+    and $255, %rax
+    movq $27, %rbx
+    cmp %rax, %rbx
+    je exit
+    movq $3, %rbx
+    cmp %rax, %rbx
+    je exit
+
+    movq %rbp, %rsp
+    pop %rbp
+    ret
+
 .global clearTerm
 .type clearTerm, @function
 clearTerm:
@@ -115,4 +132,3 @@ clearTerm:
     movq %rbp, %rsp
     pop %rbp
     ret
-
