@@ -114,15 +114,21 @@ char_handler:
 
     mov %rdi, %rax
     and $255, %rax
-    movq $27, %rbx
+    movq $27, %rbx          /* Escape */
     cmp %rax, %rbx
     je .call_escMode
+    movq $127, %rbx         /* Delete char */
+    cmp %rax, %rbx
+    je .call_cursorLeft
     movq $3, %rbx
     cmp %rax, %rbx
     je exit
     jmp .end_char_handler
 .call_escMode:
     call escMode
+    jmp .end_char_handler
+.call_cursorLeft:
+    call previousChar
     jmp .end_char_handler
 .end_char_handler:
     movq %rbp, %rsp
