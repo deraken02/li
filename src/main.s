@@ -77,7 +77,7 @@ getchar:
     movq $c, %rsi /*addresse du buffer*/
     movq $1, %rdx /*nombre d'octet à lire*/
     syscall       /*Appel le noyau*/
-
+    mov c, %rax
     movq %rbp, %rsp
     pop %rbp
     ret
@@ -116,11 +116,15 @@ char_handler:
     and $255, %rax
     movq $27, %rbx
     cmp %rax, %rbx
-    je escMode
+    je .call_escMode
     movq $3, %rbx
     cmp %rax, %rbx
     je exit
-
+    jmp .end_char_handler
+.call_escMode:
+    call escMode
+    jmp .end_char_handler
+.end_char_handler:
     movq %rbp, %rsp
     pop %rbp
     ret
@@ -153,6 +157,46 @@ escMode:
     movq $113, %rbx
     cmp %rax, %rbx
     je exit
+    movq $91, %rbx
+    cmp %rax, %rbx
+    je .call_direction_key
+    jmp .end_escMode
+.call_direction_key:
+    call directionKey
+    jmp while
+.end_escMode:
+    movq %rbp, %rsp
+    pop %rbp
+    ret
+
+.global previousChar
+.type previousChar, @function
+previousChar:
+    push %rbp   /*Sauvegarde le pointeur de base*/
+    movq %rsp, %rbp
+
+    movq $1, %rax
+    movq $1, %rdi
+    movq $CursorLeft, %rsi
+    movq $3, %rdx
+    syscall
+
+    movq %rbp, %rsp
+    pop %rbp
+    ret
+
+
+.global nextChar
+.type nextChar, @function
+nextChar:
+    push %rbp   /*Sauvegarde le pointeur de base*/
+    movq %rsp, %rbp
+
+    movq $1, %rax
+    movq $1, %rdi
+    movq $CursorRight, %rsi
+    movq $3, %rdx
+    syscall
 
     movq %rbp, %rsp
     pop %rbp
