@@ -51,7 +51,7 @@ jobs:
 
       - name: Compile script of test to write
         run: |
-zsh:1: command not found: p
+          rm tester
           cp tests/replace_test.c .
           gcc replace_test.c
 
