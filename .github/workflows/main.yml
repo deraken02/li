@@ -64,4 +64,4 @@ jobs:
           ./append_test.sh
 
       - name: Cleanup
-        run: rm -f append_test.c append_test.sh write_test.c write_test.sh tester a.out stdout error
+        run: rm -f append_test.c append_test.sh error_test.sh write_test.c write_test.sh tester a.out stdout error
