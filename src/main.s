@@ -181,12 +181,26 @@ previousChar:
     push %rbp   /*Sauvegarde le pointeur de base*/
     movq %rsp, %rbp
 
+    movq $8, %rax   /*sys_lseek*/
+    movq fd, %rdi   /*file descriptor*/
+    movq $0, %rsi   /*offset*/
+    movq $1, %rdx   /*SEEK_CUR*/
+    syscall
+    movq $0, %rbx
+    cmp %rax, %rbx
+    je endPreviousChar
+    dec %rax
+    movq %rax, %rsi /*offset*/
+    movq $8, %rax   /*sys_lseek*/
+    movq fd, %rdi   /*file descriptor*/
+    movq $0, %rdx   /*SEEK_SET*/
+    syscall
     movq $1, %rax
     movq $1, %rdi
     movq $CursorLeft, %rsi
     movq $3, %rdx
     syscall
-
+endPreviousChar:
     movq %rbp, %rsp
     pop %rbp
     ret
