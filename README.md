@@ -10,6 +10,7 @@ A simple text editor in x86_64
 |Append the text in an existing file|✔|
 |Display the content of the file if he already exists|✔|
 |Remove text in the file|❌|
+|Replace text in the file|✔|
 |Colorize the code|❌|
 |Enable raw mod|✔|
 |Erase the terminal in the launchement|✔|
