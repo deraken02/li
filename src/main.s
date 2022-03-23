@@ -120,6 +120,9 @@ char_handler:
     movq $127, %rbx         /* Delete char */
     cmp %rax, %rbx
     je .call_cursorLeft
+    movq $8, %rbx           /* Escape */
+    cmp %rax, %rbx
+    je .call_previousChar
     movq $3, %rbx
     cmp %rax, %rbx
     je exit
@@ -128,6 +131,9 @@ char_handler:
     call escMode
     jmp .end_char_handler
 .call_cursorLeft:
+    call previousChar
+    jmp .end_char_handler
+.call_previousChar:
     call previousChar
     jmp .end_char_handler
 .end_char_handler:
