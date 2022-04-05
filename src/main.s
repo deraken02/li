@@ -169,10 +169,18 @@ escMode:
     movq $91, %rbx
     cmp %rax, %rbx
     je .call_direction_key
+    movq $104, %rbx
+    cmp %rax, %rbx
+    je .call_help
     jmp .end_escMode
 .call_direction_key:
     call directionKey
-    jmp while
+    call getchar
+    call char_handler
+    jmp .end_escMode
+.call_help:
+    call displayHelp
+    jmp .end_escMode
 .end_escMode:
     movq %rbp, %rsp
     pop %rbp
