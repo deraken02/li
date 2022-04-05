@@ -15,7 +15,7 @@ A simple text editor in x86_64
 |Enable raw mod|✔|
 |Erase the terminal in the launchement|✔|
 |Manage the direction keys|❌|
-|Manage the backspace|❌|
+|Manage the backspace|✔|
 |Write the error message on the error output|✔|
 
 ## Issues
@@ -33,6 +33,7 @@ A simple text editor in x86_64
 |Write an error message if there are no arguments|✔|
 |Append text in an existing file|✔|
 |Replace text in the file|✔|
+|Manage backspace|✔|
 
 ## Manual
 
