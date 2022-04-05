@@ -2,6 +2,7 @@
 
 int main()
 {
-    printf("%s%c%s%c%c","Hello worlt",27,"[Dd",27,'q');
+    printf("%s%c%s","Hello woilt",27,"[Dd");        /* Left direction key*/
+    printf("%c%c%c%c%c%c",127,127,127,'r',27,'q');  /* backspace */
     return 0;
 }
