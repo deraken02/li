@@ -1,0 +1,32 @@
+#####################################################
+#                                                   #
+#                        LI                         #
+#                                               v0.1#
+#####################################################
+
+li is a simple text editor wrote to learn x86_64.
+
+#####################################################
+#               Part 1:Basic functions              #
+#####################################################
+
+
+Part 1.1: Open/create a file
+============================
+
+1) Launch the command ./li <name of the file>
+   li should be launched. If the file already exist
+   the content is print.
+
+Part 1.2: Close a file
+======================
+
+1) To quit li write
+   <Escape> then q. The file is saved automatically.
+
+Part 1.3: Display help
+======================
+
+1) To display the help page write
+   <Escape> then h.
+   And <Escape> then q to quit the help.
