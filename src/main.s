@@ -130,6 +130,8 @@ char_handler:
 .call_cursorLeft:
     call previousChar
     call getchar
+    movq c, %rdi
+    call char_handler
     jmp .end_char_handler
 .end_char_handler:
     movq %rbp, %rsp
