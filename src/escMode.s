@@ -1,3 +1,22 @@
+help:
+    .string "help"
+
+.global displayHelp
+.type displayHelp, @function
+displayHelp:
+    push %rbp   /*Sauvegarde le pointeur de base*/
+    movq %rsp, %rbp
+
+    movq $59, %rax
+    movq $help, %rdi
+    movq $0, %rsi
+    movq $0, %rdx
+    syscall
+.end_display_help:
+    movq %rbp, %rsp
+    pop %rbp
+    ret
+
 .global directionKey
 .type directionKey, @function
 directionKey:
@@ -18,6 +37,7 @@ directionKey:
     jmp .end_direction_key
 .call_next:
     call nextChar
+    jmp .end_direction_key
 .end_direction_key:
     movq %rbp, %rsp
     pop %rbp
