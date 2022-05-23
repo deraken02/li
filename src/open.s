@@ -57,8 +57,6 @@ createFile:
     push %rbp
     movq %rsp, %rbp
 
-    movq $5, %rax           /* Instruction fstat*/
-    syscall
     movq $0, %rax           /* Read the content */
     syscall
     cmp $0, %rax
