@@ -26,3 +26,6 @@ help: src/help.s
 
 clear:
 	rm -fr *.o
+
+clean:
+	rm -fr help li
