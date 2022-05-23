@@ -7,11 +7,24 @@ displayHelp:
     push %rbp   /*Sauvegarde le pointeur de base*/
     movq %rsp, %rbp
     call clearTerm
+    movq $57, %rax  /* syscall fork */
+    syscall
+    cmp $0, %rax
+    jne parent
     movq $59, %rax
     movq $help, %rdi
     movq $0, %rsi
     movq $0, %rdx
     syscall
+    jmp .end_display_help
+parent:
+    movq $61, %rax  /* syscall wait4*/
+    movq $(-1), %rdi
+    movq $0, %rsi
+    movq $0, %rdx
+    movq $0, %r10
+    syscall
+    call getchar
     call clearTerm
 .end_display_help:
     movq %rbp, %rsp
