@@ -4,7 +4,7 @@
 main:
         pushq   %rbp
         movq    %rsp, %rbp
-        subq    $16, %rsp
+	subq    $16, %rsp
         movl    $0, %esi
         movl    $.LC0, %edi
         movl    $0, %eax

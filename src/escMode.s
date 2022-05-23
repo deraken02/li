@@ -6,12 +6,13 @@ help:
 displayHelp:
     push %rbp   /*Sauvegarde le pointeur de base*/
     movq %rsp, %rbp
-
+    call clearTerm
     movq $59, %rax
     movq $help, %rdi
     movq $0, %rsi
     movq $0, %rdx
     syscall
+    call clearTerm
 .end_display_help:
     movq %rbp, %rsp
     pop %rbp
