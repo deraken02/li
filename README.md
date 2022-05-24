@@ -17,6 +17,7 @@ A simple text editor in x86_64
 |Manage the direction keys|❌|
 |Manage the backspace|✔|
 |Write the error message on the error output|✔|
+|Create an help page|✔|
 
 ## Issues
 
