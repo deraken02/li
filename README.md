@@ -18,6 +18,7 @@ A simple text editor in x86_64
 |Manage the backspace|✔|
 |Write the error message on the error output|✔|
 |Create an help page|✔|
+|Create an menu page|✔|
 
 ## Issues
 
@@ -62,4 +63,8 @@ To quit the programm press `Esc` then `q`
 
 #### Display an help page
 
-To display the help page press `Esc` then `h`. Press any key to quit this page
+To display the help page press `Esc` then `h`. Press any key to quit this page.
+
+#### Display an menu page
+
+To display the help page press `Esc` then `p`. Press any key to quit this page.

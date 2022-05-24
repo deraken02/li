@@ -29,6 +29,9 @@ Part 1.3: Display help
 
 1) To display the help page write
    <Escape> then h.
-   And <Escape> then q to quit the help.
+   And press any key to quit the help.
+2) To display the menu page write
+   <Escape> then p.
+   And press any key to quit the menu.
 
 To close this file touch any key.
