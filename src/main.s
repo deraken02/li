@@ -179,6 +179,7 @@ escMode:
     call char_handler
     jmp .end_escMode
 .call_help:
+    movq fd, %rdi
     call displayHelp
     jmp .end_escMode
 .end_escMode:
