@@ -159,6 +159,9 @@ escMode:
     movq $104, %rbx
     cmp %rax, %rbx
     je .call_help
+    movq $112, %rbx
+    cmp %rax, %rbx
+    je .call_menu
     jmp .end_escMode
 .call_direction_key:
     call directionKey
@@ -168,6 +171,10 @@ escMode:
 .call_help:
     movq fd, %rdi
     call displayHelp
+    jmp .end_escMode
+.call_menu:
+    movq fd, %rdi
+    call displayMenu
     jmp .end_escMode
 .end_escMode:
     movq %rbp, %rsp

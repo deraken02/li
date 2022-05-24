@@ -1,0 +1,4 @@
+| Display help| Esc h |
+| Display menu| Esc p |
+
+| Close li    | Esc q |

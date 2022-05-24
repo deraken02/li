@@ -3,6 +3,8 @@ c:
     .byte ''
 help:
     .string ".cache/help.txt"
+menu:
+    .string ".cache/menu.txt"
 .text
 .global displayHelp
 .type displayHelp, @function
@@ -23,6 +25,30 @@ displayHelp:
     popq %rdi       /* file descriptor*/
     call displayContent
 .end_display_help:
+    call getchar
+    movq %rbp, %rsp
+    pop %rbp
+    ret
+
+.global displayMenu
+.type displayMenu, @function
+displayMenu:
+    push %rbp   /*Sauvegarde le pointeur de base*/
+    movq %rsp, %rbp
+    pushq %rdi       /* file descriptor*/
+    call clearTerm
+    movl $0, %esi
+    movl $menu, %edi
+    movl $0, %eax
+    call open
+    movq %rax, %rdi
+    call displayContent
+    call closeFile
+    call getchar
+    call clearTerm
+    popq %rdi       /* file descriptor*/
+    call displayContent
+.end_display_menu:
     call getchar
     movq %rbp, %rsp
     pop %rbp
