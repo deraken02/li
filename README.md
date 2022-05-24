@@ -56,4 +56,10 @@ The programm take one argument (the name of the file):
 ./li <name_of_file>
 ```
 
+#### Quit the programm
+
 To quit the programm press `Esc` then `q`
+
+#### Display an help page
+
+To display the help page press `Esc` then `h`. Press any key to quit this page
