@@ -17,6 +17,7 @@ A simple text editor in x86_64
 |Manage the direction keys|❌|
 |Manage the backspace|✔|
 |Write the error message on the error output|✔|
+|Create an help page|✔|
 
 ## Issues
 
@@ -55,4 +56,10 @@ The programm take one argument (the name of the file):
 ./li <name_of_file>
 ```
 
+#### Quit the programm
+
 To quit the programm press `Esc` then `q`
+
+#### Display an help page
+
+To display the help page press `Esc` then `h`. Press any key to quit this page
