@@ -15,17 +15,6 @@ CursorRight:
     .string "\033[C"
 CursorLeft:
     .string "\033[D"
-stat:
-    .long 0         /*st_dev         0*/
-    .long 0         /*st_ino         8*/
-    .long 0         /*st_mode       16*/
-    .int  0         /*st_nlink      24*/
-    .int  0         /*st_uid        28*/
-    .long 0         /*st_gid        32*/
-    .long 0         /*st_rdev       40*/
-    .long 0         /*st_size       48*/
-    .long 0         /*st_blksize    56*/
-    .space 80
 .text
 
 .globl main
@@ -38,8 +27,6 @@ main:
     movq %rax, fd
     call clearTerm
     movq fd, %rdi
-    movq $stat, %rsi
-    movq $c, %rdx
     call displayContent
     call enableRawMod
 while:
