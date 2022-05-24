@@ -1,5 +1,5 @@
 .LC0:
-        .string "src/help.txt"
+        .string ".cache/help.txt"
 .globl main
 main:
         pushq   %rbp
