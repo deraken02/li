@@ -77,7 +77,7 @@ createFile:
     syscall
     popq %rdi
     cmp $16, %rax
-    jle .endDisplayContent
+    jl .endDisplayContent
     jmp .reader
 .endDisplayContent:
     movq %rbp, %rsp
