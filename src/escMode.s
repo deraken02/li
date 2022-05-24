@@ -2,7 +2,7 @@
 c:
     .byte ''
 help:
-    .string "help"
+    .string ".cache/help"
 .text
 .global displayHelp
 .type displayHelp, @function
@@ -30,8 +30,25 @@ parent:
     syscall
     call getchar
     call clearTerm
-    movq $8, %rax   /* sys_lseek*/
     popq %rdi       /* file descriptor*/
+    call displayFileFromBeginning
+.end_display_help:
+    call getchar
+    movq %rbp, %rsp
+    pop %rbp
+    ret
+
+.global displayFileFromBeginning
+.type displayFileFromBeginning, @function
+/**
+ * Display a file from the beginning to the end
+ * @param file descriptor
+ */
+displayFileFromBeginning:
+    push %rbp
+    movq %rsp, %rbp
+
+    movq $8, %rax   /* sys_lseek*/
     movq $0, %rsi   /* offset*/
     movq $0, %rdx   /* SEEK_SET*/
     syscall
@@ -50,8 +67,7 @@ reader:
     syscall
     popq %rdi
     jmp reader
-.end_display_help:
-    call getchar
+
     movq %rbp, %rsp
     pop %rbp
     ret
