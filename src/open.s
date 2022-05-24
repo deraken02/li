@@ -1,3 +1,7 @@
+.data
+c:
+    .space 16
+.text
 .global openFile
 .type openFile, @function
 /**
@@ -57,15 +61,24 @@ createFile:
     push %rbp
     movq %rsp, %rbp
 
-    movq $0, %rax           /* Read the content */
+    movq $8, %rax   /* sys_lseek*/
+    movq $0, %rsi   /* offset*/
+    movq $0, %rdx   /* SEEK_SET*/
     syscall
-    cmp $0, %rax
-    jle .endDisplayContent
+.reader:
+    movq $0, %rax           /* Read the content */
+    movq $c, %rsi
+    movq $16, %rdx
+    syscall
+    pushq %rdi
     movq %rax, %rdx         /* Display the content*/
     movq $1, %rdi           /* on the standard output*/
     movq $1, %rax
     syscall
-
+    popq %rdi
+    cmp $16, %rax
+    jle .endDisplayContent
+    jmp .reader
 .endDisplayContent:
     movq %rbp, %rsp
     pop %rbp
