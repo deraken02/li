@@ -19,7 +19,6 @@ openFile:
     syscall
     cmp $0, %rax
     jg endOpenFile
-    movq %rdi, %rax         /*Place the path dans rax*/
     call createFile
     jmp endOpenFile
 
@@ -39,7 +38,6 @@ createFile:
     push %rbp               /*Sauvegarde le pointeur de base*/
     movq %rsp, %rbp
 
-    movq %rax, %rdi         /*Place le pathname dans rdi*/
     movq $2, %rax           /*Instruction open*/
     movq $578,%rsi          /*O_CREATE | O_TRUNC | O_RDWR*/
     movq $420, %rdx         /*Mode 644*/
