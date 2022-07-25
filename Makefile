@@ -3,7 +3,7 @@ TARGET = li
 CC = gcc
 ASM = as
 
-CC_FLAGS = -Wall -Wextra -pedantic
+CC_FLAGS = -g -Wall -Wextra -pedantic
 CCASM_FLAGS = -g -static
 ASM_FLAGS = -a --gstabs
 
