@@ -19,6 +19,8 @@ CursorLeft:
 
 .globl main
 main:
+    pushq %rbp
+    movq %rsp, %rbp
     movq $2, %rbx           /*Le nombre de paramètre que l'on veut*/
     cmp %rdi, %rbx          /*Comparaison avec argc*/
     jne notFile             /*Imprime une erreur et sort du programme*/
@@ -28,7 +30,7 @@ main:
     call clearTerm
     movq fd, %rdi
     call displayContent
-    call enableRawMod
+    call enableRawMode
 while:
     call getchar
     mov c,%rdi
@@ -48,10 +50,9 @@ exit:
     call closeFile
     call clearTerm
 end:
-    call disableRawMod
-    mov $60 ,%rax
-    xor %rdi,%rdi   /*exit(0)*/
-    syscall
+    movq %rbp, %rsp
+    popq %rbp
+    ret
 
 .global getchar
 .type getchar, @function
