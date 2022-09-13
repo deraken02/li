@@ -18,7 +18,9 @@ displayHelp:
     movl $0, %eax
     call open
     movq %rax, %rdi
+    pushq %rdi          /* File descriptor of the help */
     call displayContent
+    popq %rdi           /* File descriptor of the help*/
     call closeFile
     call getchar
     call clearTerm
@@ -42,7 +44,9 @@ displayMenu:
     movl $0, %eax
     call open
     movq %rax, %rdi
+    pushq %rdi          /* File descriptor of the help */
     call displayContent
+    popq %rdi          /* File descriptor of the help */
     call closeFile
     call getchar
     call clearTerm
