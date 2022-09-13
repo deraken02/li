@@ -1,3 +1,5 @@
+/* Copyright (c) 2022 Delacroix Louis */
+
 #include <termios.h>
 #include <unistd.h>
 #include <stdlib.h>
