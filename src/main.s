@@ -158,7 +158,7 @@ clearTerm:
 escMode:
     push %rbp   /*Sauvegarde le pointeur de base*/
     movq %rsp, %rbp
-
+.begin_escMode:
     call getchar
     mov c, %rax
     and $255, %rax
@@ -192,6 +192,11 @@ escMode:
     call displayMenu
     jmp .end_escMode
 .end_escMode:
+    movq c, %rax
+    and $255, %rax
+    movq $27, %rbx          /* Escape */
+    cmp %rax, %rbx
+    je .begin_escMode
     movq %rbp, %rsp
     pop %rbp
     ret
