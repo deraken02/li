@@ -1,4 +1,12 @@
-# li
+ ___       ___       ___  ___
+|\  \     |\__\      |\ \|\  \
+\@\  \    \| __   ____\\ \@\  \
+ \@\  \     |\  \|\   __\ \@\  \
+  \@\  \____\@\  \@\  \__\ \@\  \
+   \@\_______\@\__\@\_______\@\__\
+    \|UUUUUUU|\|UU|\|UUUUUUU|\|UU|
+
+# li or lidl
 A simple text editor in x86_64
 
 ## Features
@@ -14,7 +22,7 @@ A simple text editor in x86_64
 |Colorize the code|❌|
 |Enable raw mod|✔|
 |Erase the terminal in the launchement|✔|
-|Manage the direction keys|❌|
+|Manage the direction keys|❌only left and right|
 |Manage the backspace|✔|
 |Write the error message on the error output|✔|
 |Create an help page|✔|
