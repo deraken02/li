@@ -112,7 +112,7 @@ char_handler:
     je .call_escMode
     movq $127, %rbx         /* Delete char */
     cmp %rax, %rbx
-    je .call_cursorLeft
+    je .call_erase
     movq $3, %rbx
     cmp %rax, %rbx
     sete %al
@@ -121,10 +121,10 @@ char_handler:
 .call_escMode:
     call escMode
     jmp .end_char_handler
-.call_cursorLeft:
-    call previousChar
+.call_erase:
+    call erase
     call getchar
-    movq c, %rdi
+    movb  c,%dil
     call char_handler
     jmp .end_char_handler
 .end_char_handler:
@@ -160,6 +160,7 @@ escMode:
 .call_direction_key:
     call directionKey
     call getchar
+    movb  c,%dil
     call char_handler
     jmp .end_escMode
 .call_help:

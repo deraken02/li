@@ -16,7 +16,7 @@ CursorLeft:
     .string "\033[D"
 eraseTerm:
     .string "\033[H\033[J"
-c:
+buffer:
     .space 2048
 .text
 
@@ -49,7 +49,7 @@ c:
 .reader:
     popq %rdx
     movq $0, %rax           /* Read the content */
-    movq $c, %rsi
+    movq $buffer, %rsi
     syscall
     movq $1, %rdi           /* on the standard output*/
     movq $1, %rax
@@ -80,8 +80,8 @@ clearTerm:
 .global setFileSize
 .type setFileSize, @function
 /**
- * Increase the variable file_size of 1
- * @return: the new size
+ * Set the size and fix the pos
+ * @return: none
  */
 setFileSize:
     push %rbp   /*Sauvegarde le pointeur de base*/
@@ -197,7 +197,6 @@ endPreviousChar:
     pop %rbp
     ret
 
-
 .global nextChar
 .type nextChar, @function
 nextChar:
@@ -221,6 +220,55 @@ nextChar:
     syscall
     call incPos
 endNextChar:
+    movq %rbp, %rsp
+    pop %rbp
+    ret
+
+.global erase
+/**
+ * Erase the charactere before the cursor
+ * @return: none
+ */
+.type erase, @function
+erase:
+    push %rbp   /*Sauvegarde le pointeur de base*/
+    movq %rsp, %rbp
+
+    movq pos, %rax
+    movq file_size, %rbx
+    cmp $0, %rbx            /* File have no charactere */
+    je .end_erase
+    cmp %rax, %rbx          /* The pointer is on the end of the file */
+    je .truncate_the_end
+    subq %rax, %rbx
+    cmp $0, %rbx
+    jne .continue_erase
+    movq $1, %rbx
+.continue_erase:
+    movq %rbx, %rdx
+    movq $0, %rax
+    movq fd, %rdi
+    movq $buffer, %rsi
+    syscall
+    pushq %rdx
+    call previousChar
+    popq %rdx
+    movq fd, %rdi
+    movq $buffer, %rsi
+    movq $1, %rax
+    syscall
+.truncate_the_end:
+    call decSize
+    movq $77, %rax          /* sys_ftruncate */
+    movq fd, %rdi
+    movq file_size, %rsi
+    syscall
+    call clearTerm
+    movq fd, %rdi
+    call displayContent
+    movq file_size, %rdi
+    call setFileSize
+.end_erase:
     movq %rbp, %rsp
     pop %rbp
     ret
