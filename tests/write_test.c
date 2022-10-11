@@ -2,6 +2,6 @@
 
 int main()
 {
-    printf("%s%c%c","Hello world",27,'q');
+    printf("%s%c%c","Hello world",3);
     return 0;
 }
