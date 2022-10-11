@@ -1,7 +1,5 @@
 /* Copyright (c) 2022 Delacroix Louis */
 .data
-c:
-    .space 2048
 .text
 .global openFile
 .type openFile, @function
@@ -44,44 +42,6 @@ createFile:
     movq $420, %rdx         /*Mode 644*/
     syscall
 
-    movq %rbp, %rsp
-    pop %rbp
-    ret
-
-.global displayContent
-.type displayContent, @function
-/**
- * Display the content of the file
- * @param fd the file descritor
- * @param stat the pointer of the struct stat
- * @return void
- */
- displayContent:
-    push %rbp
-    movq %rsp, %rbp
-
-    movq $8, %rax   /* sys_lseek*/
-    movq $0, %rsi   /* offset*/
-    movq $0, %rdx   /* SEEK_SET*/
-    syscall
-    movq $8, %rax   /* sys_lseek*/
-    movq $0, %rsi   /* offset*/
-    movq $2, %rdx   /* SEEK_SET*/
-    syscall
-    pushq %rax
-    movq $8, %rax   /* sys_lseek*/
-    movq $0, %rsi   /* offset*/
-    movq $0, %rdx   /* SEEK_SET*/
-    syscall
-.reader:
-    popq %rdx
-    movq $0, %rax           /* Read the content */
-    movq $c, %rsi
-    syscall
-    movq $1, %rdi           /* on the standard output*/
-    movq $1, %rax
-    syscall
-.endDisplayContent:
     movq %rbp, %rsp
     pop %rbp
     ret
