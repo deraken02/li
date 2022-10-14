@@ -90,6 +90,7 @@ setFileSize:
     movq %rdi, file_size
     movq %rdi, pos
 
+    movq $0, %rax
     movq %rbp, %rsp
     pop %rbp
     ret
@@ -180,10 +181,10 @@ previousChar:
     movq pos, %rax
     cmp $0, %rax
     je endPreviousChar
-    dec %rax
-    movq %rax, %rsi /*offset*/
-    movq fd, %rdi
+    call decPos
     movq $8, %rax   /*sys_lseek*/
+    movq fd, %rdi
+    movq pos,%rsi   /*offset*/
     movq $0, %rdx   /*SEEK_SET*/
     syscall
     movq $1, %rax
@@ -191,7 +192,6 @@ previousChar:
     movq $CursorLeft, %rsi
     movq $3, %rdx
     syscall
-    call decPos
 endPreviousChar:
     movq %rbp, %rsp
     pop %rbp
@@ -207,10 +207,10 @@ nextChar:
     movq file_size, %rbx
     cmp %rax, %rbx
     je endNextChar
-    inc %rax
-    movq %rax, %rsi /*offset*/
+    call incPos
     movq $8, %rax   /*sys_lseek*/
     movq fd, %rdi
+    movq pos,%rsi   /*offset*/
     movq $0, %rdx   /*SEEK_SET*/
     syscall
     movq $1, %rax
@@ -218,7 +218,6 @@ nextChar:
     movq $CursorRight, %rsi
     movq $3, %rdx
     syscall
-    call incPos
 endNextChar:
     movq %rbp, %rsp
     pop %rbp
@@ -236,22 +235,17 @@ erase:
 
     movq $0, %r8
     movq pos, %rax
-    movq file_size, %rbx
-    cmp $0, %rbx            /* The file is empty */
+    movq file_size, %rdx
+    cmp $0, %rdx            /* The file is empty */
     je .end_erase
-    cmp %rax, %rbx          /* The pointer is on the end of the file */
+    cmp %rax, %rdx          /* The pointer is on the end of the file */
     je .truncate_the_end
-    subq %rax, %rbx
-    cmp $0, %rbx
-    jne .continue_erase
-    movq $1, %rbx
-.continue_erase:
-    movq %rbx, %rdx
+    subq %rax, %rdx
     movq $0, %rax
     movq fd, %rdi
     movq $buffer, %rsi
     syscall
-    pushq %rdx
+    pushq %rax
     call previousChar
     popq %rdx
     movq fd, %rdi

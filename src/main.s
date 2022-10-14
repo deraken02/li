@@ -6,6 +6,8 @@ fd:
     .int 1
 strNotFile:
     .string "No file specified\n"
+charNotImplement:
+    .string "Char not implement\n"
 request_exit:
     .byte 0
 .text
@@ -30,7 +32,10 @@ while:
     call getchar
     movb  c,%dil
     call char_handler
+    cmp $0, %rax
+    jne .special_char
     call putchar
+.special_char:
     movb request_exit, %al
     cmpb $0, %al
     je   while
@@ -100,11 +105,13 @@ putchar:
 /**
  * Handler for the special charactere
  * @param char the current charactere
+ * @return 1 if the current character is a special character else 0
  */
 char_handler:
     push %rbp
     movq %rsp, %rbp
 
+    push $0
     mov %rdi, %rax
     and $255, %rax
     movq $27, %rbx          /* Escape */
@@ -117,17 +124,21 @@ char_handler:
     cmp %rax, %rbx
     sete %al
     mov %al, request_exit
+    popq %rbx
+    pushq %rax
     jmp .end_char_handler
 .call_escMode:
     call escMode
+    popq %rax
+    pushq $1
     jmp .end_char_handler
 .call_erase:
     call erase
-    call getchar
-    movb  c,%dil
-    call char_handler
+    popq %rax
+    pushq $1
     jmp .end_char_handler
 .end_char_handler:
+    popq %rax
     movq %rbp, %rsp
     pop %rbp
     ret
@@ -153,15 +164,18 @@ escMode:
     movq $112, %rbx
     cmp %rax, %rbx
     je .call_menu
+    movq $1, %rax           /*syscall write*/
+    movq $2, %rdi           /*STDERR*/
+    movq $charNotImplement, %rsi
+    movq $19, %rdx          /*nombre d'octet à écrire*/
+    syscall                 /*Appel le noyau*/
+    movb $1, request_exit
     jmp .end_escMode
 .end_of_pg:
     movb $1, request_exit
     jmp .end_escMode
 .call_direction_key:
     call directionKey
-    call getchar
-    movb  c,%dil
-    call char_handler
     jmp .end_escMode
 .call_help:
     movq fd, %rdi
