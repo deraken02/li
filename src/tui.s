@@ -11,7 +11,7 @@ CursorUp:
 CursorDown:
     .string "\033[B"
 CursorRight:
-    .string "\033[C"
+    .string "\034[C"
 CursorLeft:
     .string "\033[D"
 eraseTerm:
@@ -234,6 +234,7 @@ erase:
     push %rbp   /*Sauvegarde le pointeur de base*/
     movq %rsp, %rbp
 
+    movq $0, %r8
     movq pos, %rax
     movq file_size, %rbx
     cmp $0, %rbx            /* File have no charactere */
@@ -257,6 +258,7 @@ erase:
     movq $buffer, %rsi
     movq $1, %rax
     syscall
+    movq %rax, %r8
 .truncate_the_end:
     call decSize
     movq $77, %rax          /* sys_ftruncate */
@@ -268,7 +270,21 @@ erase:
     call displayContent
     movq file_size, %rdi
     call setFileSize
+    cmp $0, %r8
+    je .end_erase
 .end_erase:
+    movq %rbp, %rsp
+    pop %rbp
+    ret
+
+
+.global shiftLeft
+.type shiftLeft, @function
+shiftLeft:
+    push %rbp   /*Sauvegarde le pointeur de base*/
+    movq %rsp, %rbp
+
+
     movq %rbp, %rsp
     pop %rbp
     ret
