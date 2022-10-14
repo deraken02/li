@@ -237,7 +237,7 @@ erase:
     movq $0, %r8
     movq pos, %rax
     movq file_size, %rbx
-    cmp $0, %rbx            /* File have no charactere */
+    cmp $0, %rbx            /* The file is empty */
     je .end_erase
     cmp %rax, %rbx          /* The pointer is on the end of the file */
     je .truncate_the_end
@@ -272,19 +272,42 @@ erase:
     call setFileSize
     cmp $0, %r8
     je .end_erase
+    movq %r8, %rdi
+    call shiftLeft
 .end_erase:
     movq %rbp, %rsp
     pop %rbp
     ret
 
 
+/**
+ * Shift the pointer to the left n times
+ * @param n the number of shift
+ * @return real number of shift
+ */
 .global shiftLeft
 .type shiftLeft, @function
 shiftLeft:
     push %rbp   /*Sauvegarde le pointeur de base*/
     movq %rsp, %rbp
 
-
+    movq $0, %rax
+    pushq %rax
+    movq %rdi, %r8
+.loop_shift_left:
+    cmp $0, %r8
+    je .end_shift
+    movq pos, %rax
+    cmp $0, %rax
+    je .end_shift
+    call previousChar
+    popq %rax
+    inc %rax
+    pushq %rax
+    dec %r8
+    jmp .loop_shift_left
+.end_shift:
+    popq %rax
     movq %rbp, %rsp
     pop %rbp
     ret
