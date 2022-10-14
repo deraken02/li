@@ -11,7 +11,7 @@ CursorUp:
 CursorDown:
     .string "\033[B"
 CursorRight:
-    .string "\034[C"
+    .string "\033[C"
 CursorLeft:
     .string "\033[D"
 eraseTerm:
