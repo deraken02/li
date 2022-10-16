@@ -46,7 +46,7 @@ jobs:
           chmod +x write_test.sh
           ./write_test.sh
 
-      - name: Compile script of test to replace character
+      - name: Compile script of test to replace charactere
         run: |
           rm tester
           cp tests/replace_test.c .
@@ -60,6 +60,36 @@ jobs:
           cp tests/replace_test.sh .
           chmod +x replace_test.sh
           ./replace_test.sh
+
+      - name: Compile script of test 1: erase charactere
+        run:|
+          rm tester
+          cp tests/erase_test1.c .
+          gcc erase_test1.c
+
+      - name: Try to write in the file
+        run: ./a.out | ./li tester
+
+      - name: Verify the result
+        run: |
+          cp tests/erase_test.sh .
+          chmod +x erase_test.sh
+          ./erase_test.sh
+
+      - name: Compile script of test 2: erase charactere
+        run:|
+          rm tester
+          cp tests/erase_test2.c .
+          gcc erase_test2.c
+
+      - name: Try to write in the file
+        run: ./a.out | ./li tester
+
+      - name: Verify the result
+        run: |
+          cp tests/erase_test.sh .
+          chmod +x erase_test.sh
+          ./erase_test.sh
 
       - name: Compile script of test to append
         run: |
