@@ -6,16 +6,8 @@ fd:
     .int 1
 strNotFile:
     .string "No file specified\n"
-eraseTerm:
-    .string "\033[H\033[J"
-CursorUp:
-    .string "\033[A"
-CursorDown:
-    .string "\033[B"
-CursorRight:
-    .string "\033[C"
-CursorLeft:
-    .string "\033[D"
+charNotImplement:
+    .string "Char not implement\n"
 request_exit:
     .byte 0
 .text
@@ -33,12 +25,17 @@ main:
     call clearTerm
     movq fd, %rdi
     call displayContent
+    movq %rax, %rdi
+    call setFileSize
     call enableRawMode
 while:
     call getchar
     movb  c,%dil
     call char_handler
+    cmp $0, %rax
+    jne .special_char
     call putchar
+.special_char:
     movb request_exit, %al
     cmpb $0, %al
     je   while
@@ -96,7 +93,9 @@ putchar:
     movq $c, %rsi /*addresse du buffer*/
     movq $1, %rdx /*nombre d'octet à écrire*/
     syscall       /*Appel le noyau*/
+    call incSize
 .end_putchar:
+    call incPos
     movq %rbp, %rsp
     pop %rbp
     ret
@@ -106,11 +105,13 @@ putchar:
 /**
  * Handler for the special charactere
  * @param char the current charactere
+ * @return 1 if the current character is a special character else 0
  */
 char_handler:
     push %rbp
     movq %rsp, %rbp
 
+    push $0
     mov %rdi, %rax
     and $255, %rax
     movq $27, %rbx          /* Escape */
@@ -118,37 +119,26 @@ char_handler:
     je .call_escMode
     movq $127, %rbx         /* Delete char */
     cmp %rax, %rbx
-    je .call_cursorLeft
+    je .call_erase
     movq $3, %rbx
     cmp %rax, %rbx
-    je exit
+    sete %al
+    mov %al, request_exit
+    popq %rbx
+    pushq %rax
     jmp .end_char_handler
 .call_escMode:
     call escMode
+    popq %rax
+    pushq $1
     jmp .end_char_handler
-.call_cursorLeft:
-    call previousChar
-    call getchar
-    movq c, %rdi
-    call char_handler
+.call_erase:
+    call erase
+    popq %rax
+    pushq $1
     jmp .end_char_handler
 .end_char_handler:
-    movq %rbp, %rsp
-    pop %rbp
-    ret
-
-.global clearTerm
-.type clearTerm, @function
-clearTerm:
-    push %rbp   /*Sauvegarde le pointeur de base*/
-    movq %rsp, %rbp
-
-    movq $1, %rax /*syscall write*/
-    movq $1, %rdi /*File Descriptor*/
-    movq $eraseTerm, %rsi /*addresse du buffer*/
-    movq $6, %rdx /*nombre d'octet à écrire*/
-    syscall       /*Appel le noyau*/
-
+    popq %rax
     movq %rbp, %rsp
     pop %rbp
     ret
@@ -174,14 +164,18 @@ escMode:
     movq $112, %rbx
     cmp %rax, %rbx
     je .call_menu
+    movq $1, %rax           /*syscall write*/
+    movq $2, %rdi           /*STDERR*/
+    movq $charNotImplement, %rsi
+    movq $19, %rdx          /*nombre d'octet à écrire*/
+    syscall                 /*Appel le noyau*/
+    movb $1, request_exit
     jmp .end_escMode
 .end_of_pg:
     movb $1, request_exit
     jmp .end_escMode
 .call_direction_key:
     call directionKey
-    call getchar
-    call char_handler
     jmp .end_escMode
 .call_help:
     movq fd, %rdi
@@ -197,72 +191,6 @@ escMode:
     movq $27, %rbx          /* Escape */
     cmp %rax, %rbx
     je .begin_escMode
-    movq %rbp, %rsp
-    pop %rbp
-    ret
-
-.global previousChar
-.type previousChar, @function
-previousChar:
-    push %rbp   /*Sauvegarde le pointeur de base*/
-    movq %rsp, %rbp
-
-    movq $8, %rax   /*sys_lseek*/
-    movq fd, %rdi   /*file descriptor*/
-    movq $0, %rsi   /*offset*/
-    movq $1, %rdx   /*SEEK_CUR*/
-    syscall
-    movq $0, %rbx
-    cmp %rax, %rbx
-    je endPreviousChar
-    dec %rax
-    movq %rax, %rsi /*offset*/
-    movq $8, %rax   /*sys_lseek*/
-    movq fd, %rdi   /*file descriptor*/
-    movq $0, %rdx   /*SEEK_SET*/
-    syscall
-    movq $1, %rax
-    movq $1, %rdi
-    movq $CursorLeft, %rsi
-    movq $3, %rdx
-    syscall
-endPreviousChar:
-    movq %rbp, %rsp
-    pop %rbp
-    ret
-
-
-.global nextChar
-.type nextChar, @function
-nextChar:
-    push %rbp   /*Sauvegarde le pointeur de base*/
-    movq %rsp, %rbp
-
-    movq $8, %rax   /*sys_lseek*/
-    movq fd, %rdi   /*file descriptor*/
-    movq $0, %rsi   /*offset*/
-    movq $2, %rdx   /*SEEK_END*/
-    syscall
-    movq %rax, %rbx
-    movq $8, %rax   /*sys_lseek*/
-    movq fd, %rdi   /*file descriptor*/
-    movq $0, %rsi   /*offset*/
-    movq $1, %rdx   /*SEEK_CUR*/
-    syscall
-    cmp %rax, %rbx
-    je endNextChar
-    inc %rax
-    movq %rax, %rsi /*offset*/
-    movq $8, %rax   /*sys_lseek*/
-    movq fd, %rdi   /*file descriptor*/
-    movq $0, %rdx   /*SEEK_SET*/
-    syscall
-    movq $1, %rax
-    movq $1, %rdi
-    movq $CursorRight, %rsi
-    movq $3, %rdx
-    syscall
-endNextChar:
     movq %rbp, %rsp
     pop %rbp
     ret

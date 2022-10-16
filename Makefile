@@ -9,10 +9,13 @@ ASM_FLAGS = -a --gstabs
 
 all: $(TARGET) clear
 
-$(TARGET): main.o rawMod.o open.o escMode.o
+$(TARGET): main.o rawMod.o open.o escMode.o tui.o
 	$(CC) $(CCASM_FLAGS) $^ -o $@
 
 main.o: src/main.s
+	as $(ASM_FLAGS) -o $@ $^ 1>/dev/null
+
+tui.o: src/tui.s
 	as $(ASM_FLAGS) -o $@ $^ 1>/dev/null
 
 rawMod.o: src/rawMod.c
