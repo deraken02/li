@@ -2,6 +2,6 @@
 
 int main()
 {
-    printf("%s%c%s","Hello worlt",27,"[Dd");        /* Left direction key*/
+    printf("%s%c%s%c%c","Hello worlt",27,"[Dd", 27, 'q');        /* Left direction key*/
     return 0;
 }
