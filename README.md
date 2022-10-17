@@ -20,7 +20,7 @@ A simple text editor in x86_64
 |Write in the file in argument|✔|
 |Append the text in an existing file|✔|
 |Display the content of the file if he already exists|✔|
-|Remove text in the file|❌|
+|Remove text in the file|✔|
 |Replace text in the file|✔|
 |Colorize the code|❌|
 |Enable raw mod|✔|
@@ -30,6 +30,8 @@ A simple text editor in x86_64
 |Write the error message on the error output|✔|
 |Create an help page|✔|
 |Create an menu page|✔|
+|Support special characteres|❌|
+|Implement an undo|❌|
 
 ## Issues
 
