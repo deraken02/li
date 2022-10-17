@@ -61,8 +61,8 @@ jobs:
           chmod +x replace_test.sh
           ./replace_test.sh
 
-      - name: Compile script of test 1: erase charactere
-        run:|
+      - name: Compile script of test 1 erase charactere
+        run: |
           rm tester
           cp tests/erase_test1.c .
           gcc erase_test1.c
@@ -76,8 +76,8 @@ jobs:
           chmod +x erase_test.sh
           ./erase_test.sh
 
-      - name: Compile script of test 2: erase charactere
-        run:|
+      - name: Compile script of test 2 erase charactere
+        run: |
           rm tester
           cp tests/erase_test2.c .
           gcc erase_test2.c
