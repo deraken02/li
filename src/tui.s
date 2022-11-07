@@ -1,21 +1,31 @@
 /* Copyright (c) 2022 Delacroix Louis */
 .data
+char:
+    .byte 0
 file_size:
     .quad 0
 pos:
     .quad 0
+line:
+    .quad 0
+col:
+    .quad 0
 fd:
     .int 1
-CursorUp:
-    .string "\033[A"
+UselessVar:
+    .string "\033[C"
 CursorDown:
     .string "\033[B"
 CursorRight:
     .string "\033[C"
 CursorLeft:
     .string "\033[D"
+MoveUp:
+    .string "\033[A"
 eraseTerm:
     .string "\033[H\033[J"
+PosTerm:
+    .string "\033[6n"
 buffer:
     .space 2048
 .text
@@ -223,6 +233,46 @@ endNextChar:
     pop %rbp
     ret
 
+.global upChar
+.type upChar, @function
+upChar:
+    push %rbp   /*Sauvegarde le pointeur de base*/
+    movq %rsp, %rbp
+
+    call getPosition
+    movq line, %rax
+    cmp $1, %rax
+    je .end_upChar
+    movq col, %rdi
+    call shiftLeft
+    movq $1, %rax
+    movq $1, %rdi
+    movq $MoveUp, %rsi
+    movq $3, %rdx
+    syscall
+    movq pos, %rax
+    cmp $0, %rax
+    je .end_upChar
+    movq col, %r8
+    movq $1, %rbx
+.loopUpChar:
+    cmp %r8, %rbx
+    je .end_upChar
+    call getNextChar
+    cmp $10, %rax
+    je .end_upChar
+    movq $1, %rax
+    movq $1, %rdi
+    movq $CursorRight, %rsi
+    movq $3, %rdx
+    syscall
+    inc %rbx
+    jmp .loopUpChar
+.end_upChar:
+    movq %rbp, %rsp
+    pop %rbp
+    ret
+
 .global erase
 /**
  * Erase the charactere before the cursor
@@ -302,6 +352,92 @@ shiftLeft:
     jmp .loop_shift_left
 .end_shift:
     popq %rax
+    movq %rbp, %rsp
+    pop %rbp
+    ret
+
+/**
+ * Get the line and the column number and complete the global variable
+ * @return the column position
+ */
+.global getPosition
+.type getPosition, @function
+getPosition:
+    pushq   %rbp
+    movq    %rsp, %rbp
+
+    movl    $4, %edx
+    movl    $PosTerm, %esi
+    movl    $1, %edi
+    movl    $1, %eax
+    syscall
+    movl    $2, %edx        /* Clean the beginning of the return value */
+    movl    $char, %esi
+    movl    $0, %edi
+    movl    $0, %eax
+    syscall
+    movq $0, %r8
+    jmp .loopLine
+.addLoopLine:
+    cmp $0, %r8
+    je continueLine
+    imulq $10, %r8
+continueLine:
+    movb char, %al
+    movq $48, %rbx
+    subq %rbx, %rax
+    addq %rax, %r8
+.loopLine:
+    movl    $1, %edx
+    movl    $char, %esi
+    movl    $0, %edi
+    movl    $0, %eax
+    syscall
+    movb char, %al
+    cmp $59, %al
+    jne .addLoopLine
+    movq %r8, line
+    movq $0, %r8
+    jmp .loopCol
+.addLoopCol:
+    cmp $0, %r8
+    je continueCol
+    imulq $10, %r8
+continueCol:
+    movb char, %al
+    movq $48, %rbx
+    subq %rbx, %rax
+    addq %rax, %r8
+.loopCol:
+    movl    $1, %edx
+    movl    $char, %esi
+    movl    $0, %edi
+    movl    $0, %eax
+    syscall
+    movb char, %al
+    cmp $82, %al
+    jne .addLoopCol
+    movq %r8, col
+
+    movq %r8, %rax
+    movq %rbp, %rsp
+    pop %rbp
+    ret
+
+
+.global getNextChar
+.type getNextChar, @function
+getNextChar:
+    pushq   %rbp
+    movq    %rsp, %rbp
+
+    movq $0, %rax
+    movq fd, %rdi
+    movq $char, %rsi
+    movq $1, %rdx
+    syscall
+    movb char, %al
+
     movq %rbp, %rsp
     pop %rbp
     ret
