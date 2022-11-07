@@ -73,12 +73,18 @@ directionKey:
     movq $68, %rbx
     cmp %rax, %rbx
     je .call_previous
+    movq $65, %rbx
+    cmp %rax, %rbx
+    je .call_up
     jmp .end_direction_key
 .call_previous:
     call previousChar
     jmp .end_direction_key
 .call_next:
     call nextChar
+    jmp .end_direction_key
+.call_up:
+    call upChar
     jmp .end_direction_key
 .end_direction_key:
     movq %rbp, %rsp
