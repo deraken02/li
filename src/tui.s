@@ -73,6 +73,10 @@ buffer:
 
 .global clearTerm
 .type clearTerm, @function
+/**
+ * Erase the content of the terminal
+ * @return: none
+ */
 clearTerm:
     push %rbp   /*Sauvegarde le pointeur de base*/
     movq %rsp, %rbp
@@ -184,12 +188,20 @@ decSize:
 
 .global previousChar
 .type previousChar, @function
+/**
+ * Simple implementation to move in the previous charactere and move the cursor to the left
+ * @return: none
+ */
 previousChar:
     push %rbp   /*Sauvegarde le pointeur de base*/
     movq %rsp, %rbp
 
     movq pos, %rax
     cmp $0, %rax
+    je endPreviousChar
+    call getPosition
+    movq col, %rax
+    cmp $1, %rax
     je endPreviousChar
     call decPos
     movq $8, %rax   /*sys_lseek*/
@@ -209,6 +221,10 @@ endPreviousChar:
 
 .global nextChar
 .type nextChar, @function
+/**
+ * Simple implementation to move in the nexg charactere and move the cursor to the right
+ * @return: none
+ */
 nextChar:
     push %rbp   /*Sauvegarde le pointeur de base*/
     movq %rsp, %rbp
@@ -235,6 +251,10 @@ endNextChar:
 
 .global upChar
 .type upChar, @function
+/**
+ * Simple implementation to move in the up charactere and move the cursor to the up
+ * @return: none
+ */
 upChar:
     push %rbp   /*Sauvegarde le pointeur de base*/
     movq %rsp, %rbp
