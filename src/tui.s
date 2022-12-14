@@ -201,7 +201,7 @@ previousChar:
     je endPreviousChar
     call getPosition
     movq col, %rax
-    cmp $1, %rax
+    cmp $1, %rax    /* Verify if the pointer are not in the first column*/
     je endPreviousChar
     call decPos
     movq $8, %rax   /*sys_lseek*/
@@ -261,7 +261,7 @@ upChar:
 
     call getPosition
     movq line, %rax
-    cmp $1, %rax
+    cmp $1, %rax    /* Verify if the pointer are not in the first line*/
     je .end_upChar
     movq col, %rdi
     call shiftLeft
