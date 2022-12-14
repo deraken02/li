@@ -1,5 +1,4 @@
 LIDL
-
 LIDL Is a Dangerous Lady.
 LIDL Is Developped by Louis.
 LIDL Is Developped in Lille.
