@@ -1,4 +1,4 @@
-/* Copyright (c) 2022 Delacroix Louis */
+/* Copyright (c) 2023 Delacroix Louis */
 .data
 char:
     .byte 0
