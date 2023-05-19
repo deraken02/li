@@ -1,5 +1,5 @@
 #!/bin/bash
-FILE=../tester
+FILE=tester
 RES="Hello World"
 
 if [ -f $FILE ]
@@ -7,7 +7,7 @@ then
     rm $FILE
 fi
 
-printf "Hello World\033q" | ../li $FILE
+printf "Hello World\033q" | ./li $FILE
 
 read l < $FILE
 
