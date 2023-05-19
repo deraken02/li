@@ -32,7 +32,7 @@ jobs:
           ./error_test.sh
 
       - name: Try to write in the file
-        run: ./write_test.sh
+        run: ./tests/write_test.sh
 
       - name: Compile script of test to replace charactere
         run: |
