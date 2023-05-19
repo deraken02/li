@@ -23,7 +23,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Build li
-        run: make
+        run: make && cd tests
 
       - name: Error verification
         run: |
@@ -31,17 +31,8 @@ jobs:
           ./li 1>stdout 2>error
           ./error_test.sh
 
-      - name: Compile script of test to write
-        run: |
-          gcc tests/write_test.c
-
       - name: Try to write in the file
-        run: ./a.out | ./li tester
-
-      - name: Verify the result
-        run: |
-          cp tests/write_test.sh .
-          ./write_test.sh
+        run: ./write_test.sh
 
       - name: Compile script of test to replace charactere
         run: |
