@@ -29,13 +29,11 @@ jobs:
         run: |
           cp tests/error_test.sh .
           ./li 1>stdout 2>error
-          chmod +x error_test.sh
           ./error_test.sh
 
       - name: Compile script of test to write
         run: |
-          cp tests/write_test.c .
-          gcc write_test.c
+          gcc tests/write_test.c
 
       - name: Try to write in the file
         run: ./a.out | ./li tester
@@ -43,14 +41,12 @@ jobs:
       - name: Verify the result
         run: |
           cp tests/write_test.sh .
-          chmod +x write_test.sh
           ./write_test.sh
 
       - name: Compile script of test to replace charactere
         run: |
           rm tester
-          cp tests/replace_test.c .
-          gcc replace_test.c
+          gcc tests/replace_test.c
 
       - name: Try to write in the file
         run: ./a.out | ./li tester
@@ -58,14 +54,12 @@ jobs:
       - name: Verify the result
         run: |
           cp tests/replace_test.sh .
-          chmod +x replace_test.sh
           ./replace_test.sh
 
       - name: Compile script of test 1 erase charactere
         run: |
           rm tester
-          cp tests/erase_test1.c .
-          gcc erase_test1.c
+          gcc tests/erase_test1.c
 
       - name: Try to write in the file
         run: ./a.out | ./li tester
@@ -73,14 +67,12 @@ jobs:
       - name: Verify the result
         run: |
           cp tests/erase_test.sh .
-          chmod +x erase_test.sh
           ./erase_test.sh
 
       - name: Compile script of test 2 erase charactere
         run: |
           rm tester
-          cp tests/erase_test2.c .
-          gcc erase_test2.c
+          gcc tests/erase_test2.c
 
       - name: Try to write in the file
         run: ./a.out | ./li tester
@@ -88,24 +80,32 @@ jobs:
       - name: Verify the result
         run: |
           cp tests/erase_test.sh .
-          chmod +x erase_test.sh
           ./erase_test.sh
 
       - name: Compile script of test to append
         run: |
-          cp tests/append_test.c .
-          gcc append_test.c
+          gcc tests/append_test.c
 
       - name: Try to append in the file
         run: ./a.out | ./li tester
 
-      - name: Compile script of test to append
+      - name: Verify the result 
         run: |
-          cp tests/append_test.c .
-          gcc append_test.c
+            cp tests/append_test.sh .
+            ./append_tests.sh
 
-      - name: Try to append in the file
+      - name: Compile script of test to replace in the up line
+        run: |
+          cp tests/replace_up_test.c .
+          gcc replace_up_test.c
+
+      - name: Try to replace the up line in the file
         run: ./a.out | ./li tester
+
+      - name: Verify the results
+        run: |
+          cp test/replace_up_test.sh .
+          ./replace_up_test.sh
 
       - name: Cleanup
         run: rm -f *.c *.sh tester a.out stdout error
