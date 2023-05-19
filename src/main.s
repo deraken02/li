@@ -69,7 +69,7 @@ getchar:
     movq $c, %rsi /*addresse du buffer*/
     movq $1, %rdx /*nombre d'octet à lire*/
     syscall       /*Appel le noyau*/
-    mov c, %rax
+    movb c, %al
     movq %rbp, %rsp
     pop %rbp
     ret
@@ -113,7 +113,6 @@ char_handler:
 
     push $0
     mov %rdi, %rax
-    and $255, %rax
     movq $27, %rbx          /* Escape */
     cmp %rax, %rbx
     je .call_escMode
@@ -150,8 +149,7 @@ escMode:
     movq %rsp, %rbp
 .begin_escMode:
     call getchar
-    mov c, %rax
-    and $255, %rax
+    movb c, %al
     movq $113, %rbx
     cmp %rax, %rbx
     je .end_of_pg
@@ -186,8 +184,7 @@ escMode:
     call displayMenu
     jmp .end_escMode
 .end_escMode:
-    movq c, %rax
-    and $255, %rax
+    movb c, %al
     movq $27, %rbx          /* Escape */
     cmp %rax, %rbx
     je .begin_escMode

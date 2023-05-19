@@ -66,7 +66,6 @@ directionKey:
     movq %rsp, %rbp
 
     call getchar
-    and $255, %rax
     movq $67, %rbx
     cmp %rax, %rbx
     je .call_next
