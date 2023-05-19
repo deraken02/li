@@ -60,7 +60,8 @@ continueLine:
     movb    char, %al
     cmp     $59, %al
     jne     .addLoopLine
-    movq    %r8, line
+    movq    %r8, %rbx
+    mov     %ebx, line
     movq    $0, %r8
     jmp     .loopCol
 .addLoopCol:
@@ -183,7 +184,7 @@ getLine:
     push    %rbp
     movq    %rsp, %rbp
 
-    movq    line, %rax
+    mov    line, %eax
 
     movq    %rbp, %rsp
     pop     %rbp
