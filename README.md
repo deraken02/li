@@ -25,7 +25,7 @@ A simple text editor in x86_64
 |Colorize the code|❌|
 |Enable raw mod|✔|
 |Erase the terminal in the launchement|✔|
-|Manage the direction keys|❌only left and right|
+|Manage the direction keys|❌for left, right and up|
 |Manage the backspace|✔|
 |Write the error message on the error output|✔|
 |Create an help page|✔|
