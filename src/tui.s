@@ -239,8 +239,39 @@ upChar:
     call getPosition
     movq %rax, %rdi         /* Move the column number*/
     call getLine
-    cmp $1, %rax            /* Verify if the pointer are not in the first line*/
+    cmp  $1, %rax            /* Verify if the pointer are not in the first line*/
     je .end_upChar
+    movq %rdi, %rax
+    pushq %rax
+    inc  %rax
+    movq $1,   %r8
+.beginLenLine:
+    call goToLeft
+    call getNextChar
+    cmp  $10,  %rax
+    je .endLenLine
+    inc  %r8
+    movq $2,   %rax
+    jmp .beginLenLine
+.endLenLine:
+    popq %rax
+    cmp  %r8, %rax  /* compare the size of the line r8 and the column of the cursor rax*/
+    jl .upLineQuiteLong
+    pushq %r8
+    subq %r8, %rax
+    movq %rax, %r8
+    inc  %r8
+.shiftCursorToLeft:
+    call MoveCursorLeft
+    dec  %r8
+    cmp  $0, %r8
+    jne .shiftCursorToLeft
+    popq %rax
+    dec  %rax
+.upLineQuiteLong:
+    dec  %rax
+    call goToRight
+    call MoveCursorUp
 
 .end_upChar:
     movq %rbp, %rsp
@@ -299,7 +330,7 @@ erase:
 
 
 /**
- * Shift the pointer to the left n times
+ * Shift the pointer and the cursor to the left n times
  * @param n the number of shift
  * @return real number of shift
  */
@@ -328,6 +359,77 @@ shiftLeft:
     popq %rax
     movq %rbp, %rsp
     pop %rbp
+    ret
+
+/**
+ * Shift the pointer to the left n times
+ * @param n the number of shift 
+ * @return number of shift doned
+ * @notes the global variable pos will be modified
+ */
+.global goToLeft
+.type goToLeft, @function
+goToLeft:
+    push %rbp
+    movq %rsp, %rbp
+
+    cmp  $0,  %rax
+    je .endGoToLeft
+    movq %rax,%rcx
+    movq %rax,%rbx
+.goToLeftLoop:
+    movq pos, %rax
+    cmp  $0,  %rax
+    je .endGoToLeft
+    call decPos
+    loop .goToLeftLoop
+    movq $8,  %rax
+    movq fd,  %rdi
+    movq pos, %rsi
+    movq $0,  %rdx
+    syscall
+
+    movq %rbx, %rax
+    subq %rax, %rcx
+.endGoToLeft:
+    movq %rbp, %rsp
+    pop  %rbp
+    ret
+
+/**
+ * Shift the pointer to the right n times
+ * @param n the number of shift 
+ * @return number of shift doned
+ * @notes the global variable pos will be modified
+ */
+.global goToRight
+.type goToRight, @function
+goToRight:
+    push %rbp
+    movq %rsp, %rbp
+
+    cmp  $0,  %rax
+    je .endGoToRight
+    movq %rax,%rcx
+    movq %rax,%rbx
+.goToRightLoop:
+    movq pos, %rax
+    movq file_size, %r8
+    cmp  %r8, %rax
+    je .endGoToLeft
+    call incPos
+    loop .goToRightLoop
+    movq $8,  %rax
+    movq fd,  %rdi
+    movq pos, %rsi
+    movq $0,  %rdx
+    syscall
+
+    movq %rbx, %rax
+    subq %rax, %rcx
+.endGoToRight:
+    movq %rbp, %rsp
+    pop  %rbp
     ret
 
 .global getNextChar
