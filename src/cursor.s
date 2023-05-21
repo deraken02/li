@@ -1,22 +1,21 @@
 /* Copyright (c) 2022 Delacroix Louis */
 .data
-char:
-    .byte 0
+CursorUp:
+    .string "\033[A"
 CursorDown:
     .string "\033[B"
 CursorRight:
     .string "\033[C"
 CursorLeft:
     .string "\033[D"
-
-CursorUp:
-    .string "\033[A"
 PosTerm:
     .string "\033[6n"
 line:
     .int    0
 col:
     .int    0
+char:
+    .byte 0
 .text
 
 
