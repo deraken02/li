@@ -310,7 +310,6 @@ downChar:
     jne  .goToEndOfLine
     call getCol
     movq pos, %rbx
-    addq %rbx, %rax
     movq file_size, %rcx
     subq %rbx, %rcx
     cmp  %rax, %rcx
