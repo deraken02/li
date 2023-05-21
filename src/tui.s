@@ -236,6 +236,9 @@ upChar:
     push %rbp   /*Sauvegarde le pointeur de base*/
     movq %rsp, %rbp
 
+    movq pos, %rax
+    cmp  $0, %rax
+    je   .end_upChar
     call getPosition
     movq %rax, %rdi         /* Move the column number*/
     call getLine
@@ -251,8 +254,9 @@ upChar:
     cmp  $10,  %rax
     je .endLenLine
     inc  %r8
-    movq $2,   %rax
+    movq $1,   %rax
     jmp .beginLenLine
+    call incPos
 .endLenLine:
     popq %rax
     cmp  %r8, %rax  /* compare the size of the line r8 and the column of the cursor rax*/
@@ -264,7 +268,7 @@ upChar:
 .shiftCursorToLeft:
     call MoveCursorLeft
     dec  %r8
-    cmp  $0, %r8
+    cmp  $1, %r8
     jne .shiftCursorToLeft
     popq %rax
     dec  %rax
@@ -277,6 +281,68 @@ upChar:
     movq %rbp, %rsp
     pop %rbp
     ret
+
+.global downChar
+.type downChar, @function
+/**
+ * Simple implementation to move in the down charactere and move the cursor to the down
+ * @return: none
+ */
+downChar:
+    push %rbp   /*Sauvegarde le pointeur de base*/
+    movq %rsp, %rbp
+
+    movq pos, %rbx
+    movq file_size, %rcx
+    cmp  %rbx, %rcx
+    je   .end_downChar
+    call getPosition
+    pushq %rax
+.goToEndOfLine:
+    call getNextChar
+    movq %rax, %rdi
+    call incPos
+    movq pos, %rbx
+    movq file_size, %rcx
+    cmp  %rbx, %rcx
+    je   .EOF
+    cmp  $10, %rdi
+    jne  .goToEndOfLine
+    call getCol
+    movq pos, %rbx
+    addq %rbx, %rax
+    movq file_size, %rcx
+    subq %rbx, %rcx
+    cmp  %rax, %rcx
+    jl   .EOF
+    pop  %r8
+.loopRight:
+    cmp  $1, %r8
+    je  .moveDown
+    call incPos
+    call getNextChar
+    dec  %r8
+    cmp  $10, %rax
+    jne  .loopRight
+.moveLeft:
+    cmp $0, %r8
+    jne .moveDown
+    call MoveCursorLeft
+    dec %r8
+    jmp .moveLeft
+.moveDown:
+    call MoveCursorDown
+    jmp .end_downChar
+.EOF:
+    pop %r8
+    call clearTerm
+    call displayContent
+.end_downChar:
+    movq %rbp, %rsp
+    pop %rbp
+    ret
+
+
 
 .global erase
 /**
