@@ -19,6 +19,5 @@ int enableRawMode()
   atexit(disableRawMode);
   struct termios raw = orig_termios;
   raw.c_lflag &= ~(ECHO | ICANON);
-  tcsetattr(STDIN_FILENO, TCSANOW, &raw);
-  return 0;
+  return tcsetattr(STDIN_FILENO, TCSANOW, &raw);
 }

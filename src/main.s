@@ -8,6 +8,8 @@ strNotFile:
     .string "No file specified\n"
 charNotImplement:
     .string "Char not implement\n"
+unexpectedIssue:
+    .string "Unexpected issue from termios\n"
 request_exit:
     .byte 0
 .text
@@ -28,6 +30,8 @@ main:
     movq %rax, %rdi
     call setFileSize
     call enableRawMode
+    cmp  $0, %rax
+    jne  unexpected
 while:
     call getchar
     movb  c,%dil
@@ -41,6 +45,13 @@ while:
     je   while
     jmp  exit_pg
 
+unexpected:
+    movq $1, %rax           /*syscall write*/
+    movq $2, %rdi           /*STDERR*/
+    movq $unexpectedIssue, %rsi  /*addresse du buffer*/
+    movq $30, %rdx          /*nombre d'octet à écrire*/
+    syscall                 /*Appel le noyau*/
+    jmp end
 notFile:
     movq $1, %rax           /*syscall write*/
     movq $2, %rdi           /*STDERR*/
