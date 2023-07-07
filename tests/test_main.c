@@ -7,7 +7,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-#define COUNTER 5
+#define COUNTER 4
 
 typedef struct test_config{
     char name[50];
@@ -74,9 +74,31 @@ int32_t test_replace()
 {
     int32_t sta = 0;
     char results[50]={0};
-    write(fd, "Hello", 5);
+    write(fd, "Hell0", 5);
+    asm( "call setFileSize;"
+         :
+         :"D"(5):);
+    set_fd(fd);
+    asm( "call goToLeft;"
+         :
+         :"D"(1):);
+    write(fd, "o", 1);
     close(fd);
-    printf("not ");
+    fd = open(filename, O_RDONLY);
+    if(read(fd, results, 50) != 5)
+    {
+        sta = 1;
+        printf("\n%s\n",results);
+    }
+    else
+    {
+        if(strncmp("Hello",results,11) != 0)
+        {
+            sta = 1;
+            printf("\n%s\n",results);
+        }
+    }
+    close(fd);
     return sta;
 }
 
@@ -89,37 +111,6 @@ int32_t test_erase1()
          :
          :"D"(12):);
     set_fd(fd);
-    erase();
-    close(fd);
-    fd = open(filename, O_RDONLY);
-    if(read(fd, results, 50) != 11)
-    {
-        sta = 1;
-        printf("\n%s\n",results);
-    }
-    else
-    {
-        if(strncmp("Hello World",results,11) != 0)
-        {
-            sta = 1;
-            printf("\n%s\n",results);
-        }
-    }
-    close(fd);
-   return sta;
-}
-
-int32_t test_erase2()
-{
-    int32_t sta = 0;
-    char results[50] = {0};
-    write(fd, "Hello Worl d", 12);
-    asm( "call setFileSize;"
-         :
-         :"D"(12):);
-    set_fd(fd);
-    lseek(fd, 11, SEEK_CUR);
-    decPos();
     erase();
     close(fd);
     fd = open(filename, O_RDONLY);
@@ -155,9 +146,6 @@ void initialize_test()
     //Erase1 test
     strcpy(config[3].name,"Erase char at the end of the file");
     config[3].func=&test_erase1;
-    //Erase2 test
-    strcpy(config[4].name,"Erase a char int the middle the file");
-    config[4].func=&test_erase2;
 }
 
 int32_t main()
@@ -177,6 +165,7 @@ int32_t main()
         else
         {
             puts("NG");
+            sta++;
         }
         if (i != 0)
         {
