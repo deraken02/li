@@ -37,7 +37,7 @@ A simple text editor in x86_64
 
 |Id|Description of the issue | Status |
 |-|-------|---|
-|1|The getter of cursor position written to standard output<br>This problem broke the CI|Wont Fix|
+|1|The getter of cursor position written to standard output<br>This problem broke the CI|Fixed|
 
 ## CI coverage
 
