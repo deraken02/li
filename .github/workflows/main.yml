@@ -31,72 +31,11 @@ jobs:
           ./li 1>stdout 2>error
           ./error_test.sh
 
-      - name: Try to write in the file
-        run: ./tests/write_test.sh
+      - name: Compile the suite of tests
+        run: make test
 
-      - name: Compile script of test to replace charactere
-        run: |
-          rm tester
-          gcc tests/replace_test.c
-
-      - name: Try to write in the file
-        run: ./a.out | ./li tester
-
-      - name: Verify the result
-        run: |
-          cp tests/replace_test.sh .
-          ./replace_test.sh
-
-      - name: Compile script of test 1 erase charactere
-        run: |
-          rm tester
-          gcc tests/erase_test1.c
-
-      - name: Try to write in the file
-        run: ./a.out | ./li tester
-
-      - name: Verify the result
-        run: |
-          cp tests/erase_test.sh .
-          ./erase_test.sh
-
-      - name: Compile script of test 2 erase charactere
-        run: |
-          rm tester
-          gcc tests/erase_test2.c
-
-      - name: Try to write in the file
-        run: ./a.out | ./li tester
-
-      - name: Verify the result
-        run: |
-          cp tests/erase_test.sh .
-          ./erase_test.sh
-
-      - name: Compile script of test to append
-        run: |
-          gcc tests/append_test.c
-
-      - name: Try to append in the file
-        run: ./a.out | ./li tester
-
-      - name: Verify the result 
-        run: |
-            cp tests/append_test.sh .
-            ./append_tests.sh
-
-      - name: Compile script of test to replace in the up line
-        run: |
-          cp tests/replace_up_test.c .
-          gcc replace_up_test.c
-
-      - name: Try to replace the up line in the file
-        run: ./a.out | ./li tester
-
-      - name: Verify the results
-        run: |
-          cp test/replace_up_test.sh .
-          ./replace_up_test.sh
+      - name: Launch suite of tests
+        run : ./test
 
       - name: Cleanup
-        run: rm -f *.c *.sh tester a.out stdout error
+        run: rm -f *.c *.sh tester a.out stdout error li test
