@@ -16,6 +16,22 @@ buffer:
     .space 2048
 .text
 
+.global set_fd
+.type set_fd, @function
+/**
+ * Set the value of the file descriptor
+ * @param fd the file descriptor
+ * @return void
+ */
+set_fd:
+    push %rbp
+    movq %rsp, %rbp
+
+    movq %rdi, fd
+
+    movq %rbp, %rsp
+    pop  %rbp
+    ret
 .global displayContent
 .type displayContent, @function
 /**
@@ -28,7 +44,7 @@ buffer:
     push %rbp
     movq %rsp, %rbp
 
-    movq %rdi, fd
+    call set_fd
     movq $8, %rax   /* sys_lseek*/
     movq $0, %rsi   /* offset*/
     movq $0, %rdx   /* SEEK_SET*/
@@ -379,9 +395,6 @@ erase:
     movq fd, %rdi
     movq file_size, %rsi
     syscall
-    call clearTerm
-    movq fd, %rdi
-    call displayContent
     movq file_size, %rdi
     call setFileSize
     cmp $0, %r8

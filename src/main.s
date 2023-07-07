@@ -144,6 +144,9 @@ char_handler:
     jmp .end_char_handler
 .call_erase:
     call erase
+    call clearTerm
+    movq fd, %rdi
+    call displayContent
     popq %rax
     pushq $1
     jmp .end_char_handler
