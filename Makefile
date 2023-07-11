@@ -1,7 +1,7 @@
 TARGET = li
 
-CC = gcc
-ASM = as
+CC = @gcc
+ASM = @as
 
 CC_FLAGS = -g -Wall -Wextra -pedantic
 CCASM_FLAGS = -g -static
