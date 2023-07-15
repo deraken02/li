@@ -24,8 +24,8 @@ main:
     mov 8(%rsi), %rax       /*Sinon recupère argv[1]*/
     call openFile           /*Ouvre un file descriptor*/
     movq %rax, fd
+    call set_fd
     call clearTerm
-    movq fd, %rdi
     call displayContent
     movq %rax, %rdi
     call setFileSize
