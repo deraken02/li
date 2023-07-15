@@ -16,6 +16,23 @@ buffer:
     .space 2048
 .text
 
+.global setFd
+.type setFd, @function
+/**
+ * Set the file descriptor in the tui
+ * @param fd the file descriptor
+ * @return none
+ */
+setFd:
+    push %rbp
+    movq %rsp, %rbp
+
+    movq %rax, fd
+
+    movq %rbp, %rsp
+    popq %rbp
+    ret
+
 .global displayContent
 .type displayContent, @function
 /**
@@ -28,20 +45,13 @@ buffer:
     push %rbp
     movq %rsp, %rbp
 
-    movq %rdi, fd
-    movq $8, %rax   /* sys_lseek*/
-    movq $0, %rsi   /* offset*/
-    movq $0, %rdx   /* SEEK_SET*/
-    syscall
+    call goBegin
     movq $8, %rax   /* sys_lseek*/
     movq $0, %rsi   /* offset*/
     movq $2, %rdx   /* SEEK_SET*/
     syscall
     pushq %rax
-    movq $8, %rax   /* sys_lseek*/
-    movq $0, %rsi   /* offset*/
-    movq $0, %rdx   /* SEEK_SET*/
-    syscall
+    call goBegin
 .reader:
     popq %rdx
     movq $0, %rax           /* Read the content */
@@ -513,3 +523,23 @@ getNextChar:
     movq %rbp, %rsp
     pop %rbp
     ret
+
+.global goBegin
+.type goBegin, @function
+/**
+ * Go to the beginning of the file
+ */
+goBegin:
+    push %rbp
+    movq %rsp, %rbp
+
+    movq $8, %rax   /* sys_lseek*/
+    movq fd, %rdi
+    movq $0, %rsi   /* offset*/
+    movq $0, %rdx   /* SEEK_SET*/
+    syscall
+
+    movq %rbp, %rsp
+    pop %rbp
+    ret
+
