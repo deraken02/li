@@ -12,6 +12,10 @@ all: $(TARGET) clear
 $(TARGET): main.o rawMod.o open.o escMode.o tui.o cursor.o
 	$(CC) $(CCASM_FLAGS) $^ -o $@
 
+test: open.o escMode.o tui.o cursor.o
+	$(CC) $(CCASM_FLAGS) $^ tests/test_main.c -o $@
+	@rm -fr *.o
+
 main.o: src/main.s
 	$(ASM) $(ASM_FLAGS) -o $@ $^ 1>/dev/null
 
@@ -37,4 +41,4 @@ clear:
 	@shuf -n 1 .cache/acronyme.txt
 
 clean:
-	rm -fr li
+	rm -fr li test

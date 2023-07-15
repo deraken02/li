@@ -16,21 +16,21 @@ buffer:
     .space 2048
 .text
 
-.global setFd
-.type setFd, @function
+.global set_fd
+.type set_fd, @function
 /**
- * Set the file descriptor in the tui
+ * Set the value of the file descriptor
  * @param fd the file descriptor
- * @return none
+ * @return void
  */
-setFd:
+set_fd:
     push %rbp
     movq %rsp, %rbp
 
-    movq %rax, fd
+    movq %rdi, fd
 
     movq %rbp, %rsp
-    popq %rbp
+    pop  %rbp
     ret
 
 .global displayContent
@@ -389,9 +389,6 @@ erase:
     movq fd, %rdi
     movq file_size, %rsi
     syscall
-    call clearTerm
-    movq fd, %rdi
-    call displayContent
     movq file_size, %rdi
     call setFileSize
     cmp $0, %r8

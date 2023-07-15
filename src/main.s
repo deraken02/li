@@ -24,7 +24,7 @@ main:
     mov 8(%rsi), %rax       /*Sinon recupère argv[1]*/
     call openFile           /*Ouvre un file descriptor*/
     movq %rax, fd
-    call setFd
+    call set_fd
     call clearTerm
     call displayContent
     movq %rax, %rdi
@@ -144,6 +144,9 @@ char_handler:
     jmp .end_char_handler
 .call_erase:
     call erase
+    call clearTerm
+    movq fd, %rdi
+    call displayContent
     popq %rax
     pushq $1
     jmp .end_char_handler
