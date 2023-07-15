@@ -25,13 +25,17 @@ A simple text editor in x86_64
 |Colorize the code|❌|
 |Enable raw mod|✔|
 |Erase the terminal in the launchement|✔|
-|Manage the direction keys|❌for left, right and up|
+|Manage the direction keys|✔|
 |Manage the backspace|✔|
 |Write the error message on the error output|✔|
 |Create an help page|✔|
 |Create an menu page|✔|
 |Support special characteres|❌|
 |Implement an undo|❌|
+|Manage the display of a big file|❌|
+|Create a shortcut to got to the beginning of the file|❌|
+|Don't overwrite the return carriage in the replace mode|❌|
+|Create an insert mode|❌|
 
 ## Issues
 
