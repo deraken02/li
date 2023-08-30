@@ -131,6 +131,9 @@ char_handler:
     movq $127, %rbx         /* Delete char */
     cmp %rax, %rbx
     je .call_erase
+    movq $9, %rbx           /* Tab */
+    cmp %rax, %rbx
+    je .call_tab
     movq $3, %rbx
     cmp %rax, %rbx
     sete %al
@@ -151,10 +154,33 @@ char_handler:
     popq %rax
     pushq $1
     jmp .end_char_handler
+.call_tab:
+    call tabulation
+    popq %rax
+    pushq $1
+    jmp .end_char_handler
 .end_char_handler:
     popq %rax
     movq %rbp, %rsp
     pop %rbp
+    ret
+
+.global tabulation
+.type tabulation, @function
+tabulation:
+    push %rbp
+    movq %rsp, %rbp
+
+    movq $4, %rcx
+    movb $32, c     /* Move SPACE in current char */
+.tabloop:
+    pushq %rcx
+    call putchar
+    popq %rcx
+    loop .tabloop
+
+    movq %rbp, %rsp
+    popq %rbp
     ret
 
 .global escMode
