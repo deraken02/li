@@ -1,4 +1,4 @@
-/* Copyright (c) 2023 Delacroix Louis */
+/* Copyright (c) 2024 Delacroix Louis */
 
 #include <termios.h>
 #include <unistd.h>
