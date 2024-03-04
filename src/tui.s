@@ -195,7 +195,7 @@ previousChar:
     movq    pos, %rax
     cmp     $0, %rax
     je      endPreviousChar
-    call    getPosition
+    call    get_position
     cmp     $1, %rax    /* Verify if the pointer are not in the first column*/
     je      endPreviousChar
     call    decPos
@@ -249,7 +249,7 @@ upChar:
     movq pos, %rax
     cmp  $0, %rax
     je   .end_upChar
-    call getPosition
+    call get_position
     movq %rax, %rdi         /* Move the column number*/
     call getLine
     cmp  $1, %rax            /* Verify if the pointer are not in the first line*/
@@ -306,7 +306,7 @@ downChar:
     movq file_size, %rcx
     cmp  %rbx, %rcx
     je   .end_downChar
-    call getPosition
+    call get_position
     pushq %rax
 .goToEndOfLine:
     call getNextChar

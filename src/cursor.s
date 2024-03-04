@@ -170,7 +170,7 @@ MoveCursorDown:
 /**
  * Getter of the line number variable
  * @return : the line number as an int
- * Note: the line number is updated by the function getPosition
+ * Note: the line number is updated by the function get_position
  */
 getLine:
     push    %rbp
@@ -187,7 +187,7 @@ getLine:
 /**
  * Getter of the column number variable
  * @return : the column number as an int
- * Note: the line number is updated by the function getPosition
+ * Note: the line number is updated by the function get_position
  */
 getCol:
     push    %rbp
