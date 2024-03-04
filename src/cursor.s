@@ -15,7 +15,9 @@ line:
 col:
     .int    0
 char:
-    .byte 0
+    .byte   0
+PosString:
+    .space  16
 .text
 
 
@@ -35,6 +37,7 @@ get_position:
     movq    $1, %rax
     syscall
     movq    $16, %rdx
+    movq    $PosString, %rsi
     movq    $0, %rdi
     movq    $0, %rax
     syscall             /* Get string Esc[l;cR */
