@@ -45,13 +45,13 @@ set_fd:
     push %rbp
     movq %rsp, %rbp
 
-    call goBegin
+    call go_begin
     movq $8, %rax   /* sys_lseek*/
     movq $0, %rsi   /* offset*/
     movq $2, %rdx   /* SEEK_SET*/
     syscall
     pushq %rax
-    call goBegin
+    call go_begin
 .reader:
     popq %rdx
     movq $0, %rax           /* Read the content */
@@ -322,11 +322,18 @@ up_char:
     call    get_col
     cmp     %rax, %r8
     jl  .end_of_line
+    cmp     $1, %rdi
+    jne .not_in_the_beginning
+    call    go_begin
+    call    get_col
+.not_in_the_beginning:
     movq    %rax, %rdx
+    dec     %rdx
     movq    $0, %rax
     movq    fd, %rdi
     movq    $char, %rsi
     syscall                 /* move the cursor on the visual pointer */
+    call    inc_n_pos
     movq    %rax, %rdi
     jmp .end_up_char
 .end_of_line:
@@ -574,22 +581,22 @@ get_next_char:
     pop     %rbp
     ret
 
-.global goBegin
-.type goBegin, @function
+.global go_begin
+.type go_begin, @function
 /**
  * Go to the beginning of the file
  */
-goBegin:
-    push %rbp
-    movq %rsp, %rbp
+go_begin:
+    pushq   %rbp
+    movq    %rsp, %rbp
 
-    movq $8, %rax   /* sys_lseek*/
-    movq fd, %rdi
-    movq $0, %rsi   /* offset*/
-    movq $0, %rdx   /* SEEK_SET*/
+    movq    $8, %rax   /* sys_lseek*/
+    movq    fd, %rdi
+    movq    $0, %rsi   /* offset*/
+    movq    $0, %rdx   /* SEEK_SET*/
     syscall
 
-    movq %rbp, %rsp
-    pop %rbp
+    movq    %rbp, %rsp
+    pop     %rbp
     ret
 
