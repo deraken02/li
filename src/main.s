@@ -107,7 +107,7 @@ putchar:
     syscall       /*Appel le noyau*/
     call incSize
 .end_putchar:
-    call incPos
+    call inc_pos
     movq %rbp, %rsp
     pop %rbp
     ret

@@ -2,14 +2,19 @@
 .data
 CursorUp:
     .string "\033[A"
+.align 8
 CursorDown:
     .string "\033[B"
+.align 8
 CursorRight:
     .string "\033[C"
+.align 8
 CursorLeft:
     .string "\033[D"
+.align 8
 PosTerm:
     .string "\033[6n"
+.align 8
 line:
     .int    0
 col:
@@ -17,7 +22,7 @@ col:
 char:
     .byte   0
 PosString:
-    .space  16
+    .zero  16
 .text
 
 
@@ -84,14 +89,14 @@ get_position:
     pop     %rbp
     ret
 
-.global MoveCursorLeft
-.type   MoveCursorLeft, @function
+.global move_cursor_left
+.type   move_cursor_left, @function
 /**
  * Move visually the cursor to the left
  * @return none
  * Note: the function don't verify the current position of the visual cursor
  */
-MoveCursorLeft:
+move_cursor_left:
     push    %rbp
     movq    %rsp, %rbp
 
@@ -126,14 +131,14 @@ MoveCursorRight:
     pop     %rbp
     ret
 
-.global MoveCursorUp
-.type   MoveCursorUp, @function
+.global move_cursor_up
+.type   move_cursor_up, @function
 /**
  * Move visually the cursor to the up
  * @return none
  * Note: the function don't verify the current position of the visual cursor
  */
-MoveCursorUp:
+move_cursor_up:
     push    %rbp
     movq    %rsp, %rbp
 
@@ -168,14 +173,14 @@ MoveCursorDown:
     pop     %rbp
     ret
 
-.global getLine
-.type   getLine, @function
+.global get_line
+.type   get_line, @function
 /**
  * Getter of the line number variable
  * @return : the line number as an int
  * Note: the line number is updated by the function get_position
  */
-getLine:
+get_line:
     push    %rbp
     movq    %rsp, %rbp
 
@@ -185,14 +190,14 @@ getLine:
     pop     %rbp
     ret
 
-.global getCol
-.type   getCol, @function
+.global get_col
+.type   get_col, @function
 /**
  * Getter of the column number variable
  * @return : the column number as an int
  * Note: the line number is updated by the function get_position
  */
-getCol:
+get_col:
     push    %rbp
     movq    %rsp, %rbp
 
@@ -201,3 +206,4 @@ getCol:
     movq    %rbp, %rsp
     pop     %rbp
     ret
+

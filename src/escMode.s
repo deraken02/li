@@ -86,7 +86,7 @@ directionKey:
     call nextChar
     jmp .end_direction_key
 .call_up:
-    call upChar
+    call up_char
     jmp .end_direction_key
 .call_down:
     call downChar

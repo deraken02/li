@@ -123,27 +123,51 @@ incSize:
     pop %rbp
     ret
 
-.global incPos
-.type incPos, @function
+.global inc_pos
+.type inc_pos, @function
 /**
  * Increase the variable file_size of 1
  * @return: the new position
  */
-incPos:
-    push %rbp   /*Sauvegarde le pointeur de base*/
-    movq %rsp, %rbp
+inc_pos:
+    push    %rbp   /*Sauvegarde le pointeur de base*/
+    movq    %rsp, %rbp
 
-    movq pos, %rax
-    movq file_size, %rbx
-    cmp %rax, %rbx
+    movq    pos, %rax
+    movq    file_size, %rbx
+    cmp     %rax, %rbx
     jne .not_inc_size
-    call incSize
+    call    incSize
 .not_inc_size:
-    inc %rax
-    movq %rax, pos
+    inc     %rax
+    movq    %rax, pos
 
-    movq %rbp, %rsp
-    pop %rbp
+    movq    %rbp, %rsp
+    pop     %rbp
+    ret
+
+.global inc_n_pos
+.type inc_n_pos, @function
+/**
+ * Increase the variable file_size of n
+ * @param n the number to increase
+ * @return: the new position
+ */
+inc_n_pos:
+    push    %rbp   /*Sauvegarde le pointeur de base*/
+    movq    %rsp, %rbp
+
+    movq    pos, %rcx
+    addq    %rax, %rcx
+    movq    file_size, %rbx
+    cmp     %rcx, %rbx
+    jg  .not_inc_n_size
+    movq    %rcx, file_size
+.not_inc_n_size:
+    movq    %rcx, pos
+
+    movq    %rbp, %rsp
+    pop     %rbp
     ret
 
 .global decPos
@@ -162,6 +186,31 @@ decPos:
 
     movq %rbp, %rsp
     pop %rbp
+    ret
+
+.global dec_n_pos
+.type dec_n_pos, @function
+/**
+ * Decrease the variable file_size of n
+ * @param: n the number of charactere to the left
+ * @return: the new position
+ */
+dec_n_pos:
+    push    %rbp   /*Sauvegarde le pointeur de base*/
+    movq    %rsp, %rbp
+
+    movq    %rax, %rdi
+    movq    pos, %rax
+    cmp     %rdi, %rax
+    jl  .higher
+    subq    %rdi, %rax
+    jmp .end_dec_pos
+.higher:
+    movq    $0, %rax
+.end_dec_pos:
+    movq    %rax, pos
+    movq    %rbp, %rsp
+    pop     %rbp
     ret
 
 .global decSize
@@ -204,7 +253,7 @@ previousChar:
     movq    pos,%rsi   /*offset*/
     movq    $0, %rdx   /*SEEK_SET*/
     syscall
-    call    MoveCursorLeft
+    call    move_cursor_left
 endPreviousChar:
     movq    %rbp, %rsp
     pop     %rbp
@@ -224,7 +273,7 @@ nextChar:
     movq    file_size, %rbx
     cmp     %rax, %rbx
     je      endNextChar
-    call    incPos
+    call    inc_pos
     movq    $8, %rax   /*sys_lseek*/
     movq    fd, %rdi
     movq    pos,%rsi   /*offset*/
@@ -236,61 +285,73 @@ endNextChar:
     pop     %rbp
     ret
 
-.global upChar
-.type upChar, @function
+.globl up_char
+.type up_char, @function
 /**
  * Simple implementation to move in the up charactere and move the cursor to the up
  * @return: none
  */
-upChar:
-    push %rbp   /*Sauvegarde le pointeur de base*/
-    movq %rsp, %rbp
+up_char:
+    pushq   %rbp
+    movq    %rsp, %rbp
 
-    movq pos, %rax
-    cmp  $0, %rax
-    je   .end_upChar
+    movq    pos, %rax
+    cmp     $0, %rax
+    je   .end_up_char
     call get_position
-    movq %rax, %rdi         /* Move the column number*/
-    call getLine
-    cmp  $1, %rax            /* Verify if the pointer are not in the first line*/
-    je .end_upChar
-    movq %rdi, %rax
-    pushq %rax
-    inc  %rax
-    movq $1,   %r8
-.beginLenLine:
-    call goToLeft
-    call getNextChar
-    cmp  $10,  %rax
-    je .endLenLine
-    inc  %r8
-    movq $1,   %rax
-    jmp .beginLenLine
-    call incPos
-.endLenLine:
-    popq %rax
-    cmp  %r8, %rax  /* compare the size of the line r8 and the column of the cursor rax*/
-    jl .upLineQuiteLong
-    pushq %r8
-    subq %r8, %rax
-    movq %rax, %r8
-    inc  %r8
-.shiftCursorToLeft:
-    call MoveCursorLeft
-    dec  %r8
-    cmp  $1, %r8
-    jne .shiftCursorToLeft
-    popq %rax
-    dec  %rax
-.upLineQuiteLong:
-    dec  %rax
-    call goToRight
-    call MoveCursorUp
-
-.end_upChar:
-    movq %rbp, %rsp
-    pop %rbp
+    movq    %rax, %rdi  /* Store column */
+    call get_line
+    cmp     $1, %rax    /* Verify row */
+    je   .end_up_char
+    cmp     $1, %rdi
+    je  .go_to_start_line
+    movq    %rdi, %rax
+    call go_to_left
+    movq    $1, %r8
+.go_to_start_line:
+    movq    $2, %rax
+    call go_to_left
+    call get_next_char
+    inc     %r8
+    movq    pos, %rdi
+    cmp     $1, %rdi
+    je  .go_to_column
+    cmp     $10, %rax
+    jne .go_to_start_line
+.go_to_column:
+    call    get_col
+    cmp     %rax, %r8
+    jl  .end_of_line
+    movq    %rax, %rdx
+    movq    $0, %rax
+    movq    fd, %rdi
+    movq    $char, %rsi
+    syscall                 /* move the cursor on the visual pointer */
+    movq    %rax, %rdi
+    jmp .end_up_char
+.end_of_line:
+    movq    %r8, %rdx
+    dec     %rdx
+    movq    %rax, %r8
+    movq    $0, %rax
+    movq    fd, %rdi
+    movq    $char, %rsi
+    syscall                 /* move the cursor on the visual pointer */
+    call    inc_n_pos
+    subq    %rax, %r8
+    movq    %r8, %rcx
+    dec     %rcx
+.move_cursor_up_char:
+    pushq   %rcx
+    call    move_cursor_left
+    pop     %rcx
+    loop .move_cursor_up_char
+.end_up_char:
+    call    move_cursor_up
+    movq    %rbp, %rsp
+    pop     %rbp
     ret
+
 
 .global downChar
 .type downChar, @function
@@ -309,16 +370,16 @@ downChar:
     call get_position
     pushq %rax
 .goToEndOfLine:
-    call getNextChar
+    call get_next_char
     movq %rax, %rdi
-    call incPos
+    call inc_pos
     movq pos, %rbx
     movq file_size, %rcx
     cmp  %rbx, %rcx
     je   .EOF
     cmp  $10, %rdi
     jne  .goToEndOfLine
-    call getCol
+    call get_col
     movq pos, %rbx
     movq file_size, %rcx
     subq %rbx, %rcx
@@ -328,15 +389,15 @@ downChar:
 .loopRight:
     cmp  $1, %r8
     je  .moveDown
-    call incPos
-    call getNextChar
+    call inc_pos
+    call get_next_char
     dec  %r8
     cmp  $10, %rax
     jne  .loopRight
 .moveLeft:
     cmp $0, %r8
     jne .moveDown
-    call MoveCursorLeft
+    call move_cursor_left
     dec %r8
     jmp .moveLeft
 .moveDown:
@@ -394,7 +455,7 @@ erase:
     cmp $0, %r8
     je .end_erase
     movq %r8, %rdi
-    call shiftLeft
+    call shift_left
 .end_erase:
     movq %rbp, %rsp
     pop %rbp
@@ -406,9 +467,9 @@ erase:
  * @param n the number of shift
  * @return real number of shift
  */
-.global shiftLeft
-.type shiftLeft, @function
-shiftLeft:
+.global shift_left
+.type shift_left, @function
+shift_left:
     push %rbp   /*Sauvegarde le pointeur de base*/
     movq %rsp, %rbp
 
@@ -439,30 +500,21 @@ shiftLeft:
  * @return number of shift doned
  * @notes the global variable pos will be modified
  */
-.global goToLeft
-.type goToLeft, @function
-goToLeft:
-    push %rbp
-    movq %rsp, %rbp
+.global go_to_left
+.type go_to_left, @function
+go_to_left:
+    push    %rbp
+    movq    %rsp, %rbp
 
-    cmp  $0,  %rax
-    je .endGoToLeft
-    movq %rax,%rcx
-    movq %rax,%rbx
-.goToLeftLoop:
-    movq pos, %rax
-    cmp  $0,  %rax
-    je .endGoToLeft
-    call decPos
-    loop .goToLeftLoop
-    movq $8,  %rax
-    movq fd,  %rdi
-    movq pos, %rsi
-    movq $0,  %rdx
+    cmp     $0, %rax
+    je   .endGoToLeft
+    call dec_n_pos
+    movq    $8,  %rax
+    movq    fd,  %rdi
+    movq    pos, %rsi
+    movq    $0,  %rdx
     syscall
 
-    movq %rbx, %rax
-    subq %rax, %rcx
 .endGoToLeft:
     movq %rbp, %rsp
     pop  %rbp
@@ -489,7 +541,7 @@ goToRight:
     movq file_size, %r8
     cmp  %r8, %rax
     je .endGoToLeft
-    call incPos
+    call inc_pos
     loop .goToRightLoop
     movq $8,  %rax
     movq fd,  %rdi
@@ -504,21 +556,22 @@ goToRight:
     pop  %rbp
     ret
 
-.global getNextChar
-.type getNextChar, @function
-getNextChar:
+.global get_next_char
+.type get_next_char, @function
+get_next_char:
     pushq   %rbp
     movq    %rsp, %rbp
 
-    movq $0, %rax
-    movq fd, %rdi
-    movq $char, %rsi
-    movq $1, %rdx
+    movq    $0, %rax
+    movq    fd, %rdi
+    movq    $char, %rsi
+    movq    $1, %rdx
     syscall
-    movb char, %al
+    call    inc_pos
+    movb    char, %al
 
-    movq %rbp, %rsp
-    pop %rbp
+    movq    %rbp, %rsp
+    pop     %rbp
     ret
 
 .global goBegin
