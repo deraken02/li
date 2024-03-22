@@ -27,7 +27,7 @@ main:
     movq %rax, %rdi
     call set_fd
     call clearTerm
-    call displayContent
+    call display_content
     movq %rax, %rdi
     call setFileSize
     call enableRawMode
@@ -150,7 +150,7 @@ char_handler:
     call erase
     call clearTerm
     movq fd, %rdi
-    call displayContent
+    call display_content
     popq %rax
     pushq $1
     jmp .end_char_handler

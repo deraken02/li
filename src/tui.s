@@ -33,37 +33,41 @@ set_fd:
     pop  %rbp
     ret
 
-.global displayContent
-.type displayContent, @function
+.global display_content
+.type display_content, @function
 /**
  * Display the content of the file
  * @param fd the file descritor
  * @param stat the pointer of the struct stat
  * @return void
  */
- displayContent:
+ display_content:
     push %rbp
     movq %rsp, %rbp
 
+    movq    file_size, %rax
+    cmp     $0, %rax
+    jne  .already_size_set
     call go_begin
-    movq $8, %rax   /* sys_lseek*/
-    movq $0, %rsi   /* offset*/
-    movq $2, %rdx   /* SEEK_SET*/
+    movq    $8, %rax   /* sys_lseek*/
+    movq    $0, %rsi   /* offset*/
+    movq    $2, %rdx   /* SEEK_SET*/
     syscall
-    pushq %rax
+.already_size_set:
+    pushq   %rax
     call go_begin
 .reader:
-    popq %rdx
-    movq $0, %rax           /* Read the content */
-    movq $buffer, %rsi
+    popq    %rdx
+    movq    $0, %rax           /* Read the content */
+    movq    $buffer, %rsi
     syscall
-    movq $1, %rdi           /* on the standard output*/
-    movq $1, %rax
+    movq    $1, %rdi           /* on the standard output*/
+    movq    $1, %rax
     syscall
 .endDisplayContent:
-    movq %rdx, %rax  /* Return the size of the file */
-    movq %rbp, %rsp
-    pop %rbp
+    movq    %rdx, %rax  /* Return the size of the file */
+    movq    %rbp, %rsp
+    pop     %rbp
     ret
 
 
@@ -213,22 +217,22 @@ dec_n_pos:
     pop     %rbp
     ret
 
-.global decSize
-.type decSize, @function
+.global dec_size
+.type dec_size, @function
 /**
  * Increase the variable file_size of 1
  * @return: the new size
  */
-decSize:
-    push %rbp   /*Sauvegarde le pointeur de base*/
-    movq %rsp, %rbp
+dec_size:
+    push    %rbp   /*Sauvegarde le pointeur de base*/
+    movq    %rsp, %rbp
 
-    movq file_size, %rax
-    dec %rax
-    movq %rax, file_size
+    movq    file_size, %rax
+    dec     %rax
+    movq    %rax, file_size
 
-    movq %rbp, %rsp
-    pop %rbp
+    movq    %rbp, %rsp
+    pop     %rbp
     ret
 
 .global previousChar
@@ -413,61 +417,55 @@ downChar:
 .EOF:
     pop %r8
     call clearTerm
-    call displayContent
+    call display_content
 .end_downChar:
     movq %rbp, %rsp
     pop %rbp
     ret
 
-
-
 .global erase
-/**
- * Erase the charactere before the cursor
- * @return: none
- */
 .type erase, @function
 erase:
-    push %rbp   /*Sauvegarde le pointeur de base*/
-    movq %rsp, %rbp
+    pushq   %rbp
+    movq    %rsp, %rbp
 
-    movq $0, %r8
-    movq pos, %rax
-    movq file_size, %rdx
-    cmp $0, %rdx            /* The file is empty */
-    je .end_erase
-    cmp %rax, %rdx          /* The pointer is on the end of the file */
-    je .truncate_the_end
-    subq %rax, %rdx
-    movq $0, %rax
-    movq fd, %rdi
-    movq $buffer, %rsi
+    movq    pos, %rax
+    cmp     $0, %rax
+    je   .end_erase         /* Verify not in the beginning */
+    movq    file_size, %rbx
+    cmp     $0, %rbx
+    je   .end_erase         /* Verify file not empty*/
+    cmp     %rax, %rbx
+    je   .truncate          /* Verify in the end of file */
+    subq    %rax, %rbx
+    dec     %rbx
+    movq    %rbx, %rdx
+    movq    $0, %rax
+    movq    $buffer, %rsi
+    movq    fd, %rdi
     syscall
-    pushq %rax
-    call previousChar
-    popq %rdx
-    movq fd, %rdi
-    movq $buffer, %rsi
-    movq $1, %rax
+    pushq   %rax
+    movq    file_size, %rbx
+    movq    %rbx, pos
+    inc     %rax
+    call go_to_left
+    pop     %rdx
+    movq    fd, %rdi
+    movq    $buffer, %rsi
+    movq    $1, %rax
     syscall
-    movq %rax, %r8
-.truncate_the_end:
-    call decSize
-    movq $77, %rax          /* sys_ftruncate */
-    movq fd, %rdi
-    movq file_size, %rsi
+.truncate:
+    call dec_size
+    movq    $77, %rax
+    movq    fd, %rdi
+    movq    file_size, %rsi
     syscall
-    movq file_size, %rdi
-    call setFileSize
-    cmp $0, %r8
-    je .end_erase
-    movq %r8, %rdi
-    call shift_left
+    call clearTerm
+    call display_content
 .end_erase:
-    movq %rbp, %rsp
-    pop %rbp
+    movq    %rbp, %rsp
+    pop     %rbp
     ret
-
 
 /**
  * Shift the pointer and the cursor to the left n times

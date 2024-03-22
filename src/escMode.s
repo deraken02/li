@@ -20,13 +20,13 @@ displayHelp:
     call open
     movq %rax, %rdi
     pushq %rdi          /* File descriptor of the help */
-    call displayContent
+    call display_content
     popq %rdi           /* File descriptor of the help*/
     call closeFile
     call getchar
     call clearTerm
     popq %rdi       /* file descriptor*/
-    call displayContent
+    call display_content
 .end_display_help:
     call getchar
     movq %rbp, %rsp
@@ -46,13 +46,13 @@ displayMenu:
     call open
     movq %rax, %rdi
     pushq %rdi          /* File descriptor of the help */
-    call displayContent
+    call display_content
     popq %rdi          /* File descriptor of the help */
     call closeFile
     call getchar
     call clearTerm
     popq %rdi       /* file descriptor*/
-    call displayContent
+    call display_content
 .end_display_menu:
     call getchar
     movq %rbp, %rsp
