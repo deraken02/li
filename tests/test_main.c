@@ -79,7 +79,7 @@ int32_t test_replace()
          :
          :"D"(5):);
     set_fd(fd);
-    asm( "call goToLeft;"
+    asm( "call go_to_left;"
          :
          :"D"(1):);
     write(fd, "o", 1);
