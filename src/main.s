@@ -17,22 +17,21 @@ request_exit:
 .globl main
 main:
     pushq %rbp
-    movq %rsp, %rbp
-    movq $2, %rbx           /*Le nombre de paramètre que l'on veut*/
-    cmp %rdi, %rbx          /*Comparaison avec argc*/
-    jne notFile             /*Imprime une erreur et sort du programme*/
-    mov 8(%rsi), %rax       /*Sinon recupère argv[1]*/
-    call openFile           /*Ouvre un file descriptor*/
-    movq %rax, fd
-    movq %rax, %rdi
-    call set_fd
-    call clearTerm
-    call display_content
-    movq %rax, %rdi
-    call setFileSize
-    call enableRawMode
-    cmp  $0, %rax
-    jne  unexpected
+    movq  %rsp, %rbp
+    cmp   $2, %rdi          /*Comparaison avec argc*/
+    jne   notFile             /*Imprime une erreur et sort du programme*/
+    mov   8(%rsi), %rax       /*Sinon recupère argv[1]*/
+    call  openFile           /*Ouvre un file descriptor*/
+    movq  %rax, fd
+    movq  %rax, %rdi
+    call  set_fd
+    call  clearTerm
+    call  display_content
+    movq  %rax, %rdi
+    call  setFileSize
+    call  enableRawMode
+    cmp   $0, %rax
+    jne   unexpected
 while:
     call getchar
     movb  c,%dil
